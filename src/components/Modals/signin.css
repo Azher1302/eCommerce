@@ -1,0 +1,76 @@
+/* signin.css */
+.blur-background {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.form-container {
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+  margin-bottom: 1rem;
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #1a202c;
+}
+
+.form-container input,
+.form-container button {
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.form-container input {
+  border: 1px solid #cbd5e0;
+  transition: border-color 0.3s ease;
+}
+
+.form-container input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+}
+
+.form-container button {
+  background: #667eea;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.form-container button:hover {
+  background: #5a67d8;
+}
+
+.avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 0.5rem;
+  border: 2px solid #e2e8f0;
+}
+/* 
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle-icon {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+} */

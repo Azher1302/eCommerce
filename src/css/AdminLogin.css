@@ -1,0 +1,16 @@
+.background-image {
+    background-image: url('/path-to-your-image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .blur-container {
+    background-color: rgba(255, 255, 255, 0.8); /* White background with opacity */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Apply blur effect for Safari */
+    padding: 2rem; /* Add padding */
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow */
+  }
+  

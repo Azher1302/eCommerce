@@ -1,0 +1,9 @@
+.product-image {
+    transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  }
+  
+  .product-image:hover {
+    transform: scale(1.1);
+    filter: brightness(0.9);
+  }
+  

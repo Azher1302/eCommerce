@@ -1,0 +1,112 @@
+/* profile.css */
+.blur-background {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.profile-container {
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-container:hover {
+  transform: translateY(-10px);
+}
+
+.profile-container h2 {
+  margin-bottom: 1rem;
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #1a202c;
+}
+
+.profile-container p {
+  margin-bottom: 0.5rem;
+}
+
+.profile-container input,
+.profile-container button {
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.profile-container input {
+  border: 1px solid #cbd5e0;
+  transition: border-color 0.3s ease;
+}
+
+.profile-container input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+}
+
+.profile-container button {
+  background: #667eea;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.profile-container button:hover {
+  background: #5a67d8;
+}
+
+.avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 0.5rem;
+  border: 2px solid #e2e8f0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-blue-500:hover {
+  text-decoration: underline;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.rounded-full {
+  border-radius: 50%;
+}
+
+.animate-spread {
+  animation: spread 1.5s infinite;
+}
+
+@keyframes spread {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}

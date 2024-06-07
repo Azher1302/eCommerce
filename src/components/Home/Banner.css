@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: left;
+}
+
+.bg-main {
+  background-color: #1e3a8a; /* Customize this color as needed */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.bg-subMain {
+  background-color: #2563eb; /* Customize this color as needed */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.from-main {
+  --tw-gradient-from: #1e3a8a; /* Customize this color as needed */
+  --tw-gradient-to: #2563eb; /* Customize this color as needed */
+  background-image: linear-gradient(to right, var(--tw-gradient-from), var(--tw-gradient-to));
+  color: white;
+}
+
+.to-subMain {
+  --tw-gradient-to: #2563eb; /* Customize this color as needed */
+  background-image: linear-gradient(to right, var(--tw-gradient-from), var(--tw-gradient-to));
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+.hover\:from-subMain:hover {
+  --tw-gradient-from: #2563eb; /* Customize this color as needed */
+  --tw-gradient-to: #1e3a8a; /* Customize this color as needed */
+  background-image: linear-gradient(to right, var(--tw-gradient-from), var(--tw-gradient-to));
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+.hover\:to-main:hover {
+  --tw-gradient-to: #1e3a8a; /* Customize this color as needed */
+}
+
+.banner-text {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); /* Adds a subtle shadow to the text for better readability */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 3rem;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-align: center;
+  color: white;
+  margin-top: 1rem;
+}
+
+.banner-image {
+  filter: brightness(0.85); /* Adjusts the image brightness for better text visibility */
+  transition: filter 0.3s ease-in-out;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.banner-image:hover {
+  filter: brightness(1); /* Brightens the image on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  
+}

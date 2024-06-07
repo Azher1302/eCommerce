@@ -1,0 +1,64 @@
+.bg-deepGray {
+    background-color: #333; /* Example color */
+  }
+  
+  .bg-main {
+    background-color: #007bff; /* Example main color */
+  }
+  
+  .text-main {
+    color: #007bff; /* Example main text color */
+  }
+  
+  .text-heading {
+    color: #333; /* Example heading text color */
+  }
+  
+  .hover\:bg-deepGray:hover {
+    background-color: #333; /* Example hover color */
+  }
+  
+  .hover\:text-main:hover {
+    color: #007bff; /* Example hover text color */
+  }
+  
+  .hover\:bg-red-50:hover {
+    background-color: #ffe6e6; /* Example hover color for button */
+  }
+  
+  .hover\:text-red-600:hover {
+    color: #e60000; /* Example hover text color for button */
+  }
+  
+  .flex-colo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .transitions {
+    transition: all 0.3s ease;
+  }
+  
+  .rounded-md {
+    border-radius: 0.375rem;
+  }
+  
+  .shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Hide scrollbar for a cleaner look */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
