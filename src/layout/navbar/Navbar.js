@@ -1,13 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { CgUser } from 'react-icons/cg';
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart } from 'react-icons/fa';
 import { Link, NavLink } from 'react-router-dom';
 import Login from '../../components/Modals/Login';
 import { SidebarContext } from '../../Context/PopUpContex';
 import Cart from '../../components/Drawer/Cart';
-import { ImProfile } from "react-icons/im";
-
+import { ImProfile } from 'react-icons/im';
 
 const Navbar = () => {
   const { toggleCartDrawer, cartDrawerOpen } = useContext(SidebarContext);
@@ -16,7 +15,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const updateCartItemCount = () => {
-      const cartItems = JSON.parse(localStorage.getItem('cartflash')) || [];
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
       const count = cartItems.reduce((total, item) => total + item.quantity, 0);
       setCartItemCount(count);
     };
@@ -41,12 +40,9 @@ const Navbar = () => {
   return (
     <>
       <Login modalOpen={modalOpen} setModalOpen={setModalOpen} />
-      <Cart
-        cartDrawerOpen={cartDrawerOpen}
-        closeCartDrawer={toggleCartDrawer}
-      />
+      <Cart cartDrawerOpen={cartDrawerOpen} closeCartDrawer={toggleCartDrawer} />
       <div className="bg-white shadow-md sticky top-0 z-20">
-        <div className="container mx-auto py-4 px-2 gap-10 lg:grid grid-cols-7 justify-between items-center">
+        <div className="container mx-auto py-4 px-4 gap-10 grid grid-cols-1 lg:grid-cols-7 items-center">
           <div className="col-span-1 lg:block hidden">
             <Link to="/">
               <img
@@ -71,16 +67,15 @@ const Navbar = () => {
               />
             </form>
           </div>
-          <div className="col-span-3 font-bold hidden xl:gap-14 2xl:gap-20 justify-between lg:flex xl:justify-end items-center max-w-screen-lg">
-
+          <div className="col-span-3 font-bold hidden lg:flex lg:gap-6 xl:gap-10 justify-end items-center">
             <NavLink className={Hover} to="/shop">
               Shop
             </NavLink>
             <NavLink to="/about-us" className={Hover}>
-              About Us
+              About 
             </NavLink>
             <NavLink to="/contact-us" className={Hover}>
-              Contact Us
+              Contact
             </NavLink>
             <NavLink to="/Adminlogin" className={Hover}>
               Admin
@@ -90,7 +85,6 @@ const Navbar = () => {
                 <ImProfile className="w-8 h-8" />
               </button>
             </NavLink>
-
             <button
               onClick={() => {
                 setModalOpen(!modalOpen);

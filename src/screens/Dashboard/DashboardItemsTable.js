@@ -1,5 +1,6 @@
 import React from 'react';
 import { MdDeleteForever } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 function DashboardItemsTable({
   items,
@@ -10,6 +11,16 @@ function DashboardItemsTable({
   handleCancelClick,
   handleEditChange,
 }) {
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const tokenadmin = localStorage.getItem('token admin');
+      if (!tokenadmin) {
+          navigate('/AdminLogin');
+      }
+  }, [navigate]);
+
   return (
     <table className="min-w-full bg-white">
       <thead>

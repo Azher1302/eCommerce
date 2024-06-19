@@ -2,21 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Switch from 'react-switch';
-import { MdDeleteForever, MdEdit } from "react-icons/md";
-import { BaseUrl } from '../../../Config/config';
+import { MdDeleteForever, MdEdit } from 'react-icons/md';
 import { IoReload } from 'react-icons/io5';
+import { BaseUrl } from '../../../Config/config';
 
-function AllItemShow() {
+function AllProductShow() {
   const [items, setItems] = useState([]);
+  const [selectedItemType, setSelectedItemType] = useState('');
   const [showItems, setShowItems] = useState({});
   const [changesMade, setChangesMade] = useState(false);
-  const [editItem, setEditItem] = useState(null); // State for item being edited
+  const [editItem, setEditItem] = useState(null); 
   const [editValues, setEditValues] = useState({
-    ItemType: '',
-    HSNCode: '',
+    Id: '',
+    ItemName: '',
+    ItemDescription: '',
     GST: '',
-    Code: ''
+    Cess: '',
+    HSNCode: '',
+    BatchNum: '',
+    BarCode: '',
+    CAT_Number: '',
+    ItemCode: '',
+    SerialNumber: '',
+    ManufactureDate: '',
+    ExpiryDate: '',
+    Rate: '',
+    Unit: '',
+    ItemType: '',
+    WarrantyPeriod: ''
   });
+  const [itemTypes, setItemTypes] = useState([]);
 
   useEffect(() => {
     fetchItems();
@@ -25,21 +40,21 @@ function AllItemShow() {
   const fetchItems = async () => {
     const token = localStorage.getItem('token admin');
     try {
-      const response = await fetch(BaseUrl + 'api/Master/Get_All_Items?type=0', {
+      const response = await fetch(`${BaseUrl}api/Master/Get_All_Items`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       });
       if (!response.ok) {
         throw new Error('Failed to fetch items');
       }
-      let data = await response.json();
-      data = data.map((item, index) => ({ ...item, SequentialId: index }));
-      setItems(data);
+      const data = await response.json();
+      const updatedData = data.map((item, index) => ({ ...item, SequentialId: index }));
+      setItems(updatedData);
       const initialShowItems = {};
-      data.forEach(item => {
+      updatedData.forEach(item => {
         initialShowItems[item.Id] = item.Status === 1;
       });
       setShowItems(initialShowItems);
@@ -48,15 +63,43 @@ function AllItemShow() {
     }
   };
 
-  const toggleItem = async ItemId => {
-    const newStatus = !showItems[ItemId] ? 1 : 0;
+
+
+  useEffect(() => {
+    const fetchItemTypes = async () => {
+      const token = localStorage.getItem('token admin');
+      try {
+        const response = await fetch(`${BaseUrl}api/Master/GetItemMaster?type=0`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch item types');
+        }
+        const data = await response.json();
+        setItemTypes(data);
+      } catch (error) {
+        console.error('Error fetching item types:', error);
+      }
+    };
+
+    fetchItemTypes();
+  }, []);
+
+
+  const toggleItem = async itemId => {
+    const newStatus = !showItems[itemId] ? 1 : 0;
     const token = localStorage.getItem('token admin');
     try {
-      const response = await fetch(`${BaseUrl}api/Master/Disable_Enable_Item?ItemId=${ItemId}&Status=${newStatus}`, {
+      const response = await fetch(`${BaseUrl}api/Master/Disable_Enable_Item?itemId=${itemId}&Status=${newStatus}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       });
       if (!response.ok) {
@@ -64,7 +107,7 @@ function AllItemShow() {
       }
       setShowItems(prevState => ({
         ...prevState,
-        [ItemId]: !prevState[ItemId]
+        [itemId]: !prevState[itemId]
       }));
       setChangesMade(true);
       toast.success('Item status updated successfully');
@@ -85,14 +128,28 @@ function AllItemShow() {
     const item = items.find(item => item.Id === itemId);
     setEditItem(itemId);
     setEditValues({
-      ItemType: item.ItemType,
-      HSNCode: item.HSNCode,
+      Id: item.Id,
+      ItemName: item.ItemName,
+      ItemDescription: item.ItemDescription,
       GST: item.GST,
-      Code: item.Code
+      Cess: item.Cess,
+      HSNCode: item.HSNCode,
+      BatchNum: item.BatchNum,
+      BarCode: item.BarCode,
+      CAT_Number: item.CAT_Number,
+      ItemCode: item.ItemCode,
+      SerialNumber: item.SerialNumber,
+      ManufactureDate: item.ManufactureDate,
+      ExpiryDate: item.ExpiryDate,
+      Rate: item.Rate,
+      Unit: item.Unit,
+      ItemType: item.ItemType,
+      WarrantyPeriod: item.WarrantyPeriod
     });
+    setSelectedItemType(item.ItemType);
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setEditValues(prevState => ({
       ...prevState,
@@ -104,18 +161,15 @@ function AllItemShow() {
     const token = localStorage.getItem('token admin');
     try {
       const updatedItem = {
-        ...editItem,
-        ItemType: editValues.ItemType,
-        HSNCode: editValues.HSNCode,
-        GST: editValues.GST,
-        Code: editValues.Code
+        ...editValues,
+        ItemType: selectedItemType
       };
 
-      const response = await fetch(`${BaseUrl}api/Master/ItemMasterCreate_or_Update`, {
+      const response = await fetch(`${BaseUrl}api/Master/Add_or_Update_Item`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(updatedItem)
       });
@@ -124,7 +178,7 @@ function AllItemShow() {
         throw new Error('Failed to save item changes');
       }
 
-      const updatedItems = items.map(item => item.Id === editItem.Id ? updatedItem : item);
+      const updatedItems = items.map(item => (item.Id === editItem ? updatedItem : item));
       setItems(updatedItems);
       setEditItem(null);
       setChangesMade(true);
@@ -142,11 +196,11 @@ function AllItemShow() {
         ...item,
         enabled: showItems[item.Id]
       }));
-      const response = await fetch(BaseUrl + 'api/Master/UpdateItems', {
+      const response = await fetch(`${BaseUrl}api/Master/Add_or_Update_Item`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       });
@@ -163,9 +217,9 @@ function AllItemShow() {
   };
 
   return (
-    <div className="p-6 min-h-screen" style={{ backgroundColor: '#f0f4f8' }}> {/* Set the background color here */}
+    <div className="p-6 bg-navy-900 min-h-screen">
       <ToastContainer />
-      <h1 className="text-3xl font-semibold mb-6 text-center text-green-500">All Items</h1>
+      <h1 className="text-3xl font-semibold mb-6 text-center text-green">All Items</h1>
       <table className="w-full border-collapse border border-gray-300 mt-6">
         <thead>
           <tr className="bg-gray-700 text-white">
@@ -187,7 +241,7 @@ function AllItemShow() {
             <th className="px-4 py-2">Item Type</th>
             <th className="px-4 py-2">Warranty Period</th>
             <th className="px-4 py-2">Enable/Disable</th>
-   
+            <th className="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -210,81 +264,231 @@ function AllItemShow() {
               <td className="border border-gray-300 py-2 px-4">{item.Unit}</td>
               <td className="border border-gray-300 py-2 px-4">{item.ItemType}</td>
               <td className="border border-gray-300 py-2 px-4">{item.WarrantyPeriod}</td>
-              <td className="border border-gray-300 py-2 px-4 text-center">
+              <td className="border border-gray-300 py-2 px-4">
                 <Switch
-                  checked={showItems[item.Id]}
                   onChange={() => toggleItem(item.Id)}
-                  offColor="#888"
-                  onColor="#0f0"
+                  checked={showItems[item.Id]}
+                  className="react-switch"
+                  onColor="#4caf50"
+                  offColor="#f44336"
                   uncheckedIcon={false}
                   checkedIcon={false}
                 />
               </td>
-           
+              <td className="border border-gray-300 py-2 px-4">
+                <button
+                  className="text-blue-500 hover:text-blue-700 focus:outline-none mr-4"
+                  onClick={() => handleEdit(item.Id)}
+                >
+                  <MdEdit size={24} />
+                </button>
+                <button
+                  className="text-red-500 hover:text-red-700 focus:outline-none"
+                  onClick={() => handleDelete(item.Id)}
+                >
+                  <MdDeleteForever size={24} />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {editItem && (
+
+      {editItem !== null && (
         <div className="mt-6 p-4 border rounded shadow-md bg-white">
-          <h2 className="text-xl mb-4">Edit Item</h2>
-          <div className="mb-4">
-            <label className="block mb-2">Item Type</label>
-            <input
-              type="text"
-              name="ItemType"
-              value={editValues.ItemType}
-              onChange={handleChange}
-              className="border px-4 py-2 w-full"
-            />
+          <div className="bg-white p-6 rounded-md shadow-md">
+            <h2 className="text-2xl font-bold mb-4">Edit Item</h2>
+            <div className="mb-4">
+              <label className="block mb-1">Item Name:</label>
+              <input
+                type="text"
+                name="ItemName"
+                value={editValues.ItemName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Item Description:</label>
+              <textarea
+                name="ItemDescription"
+                value={editValues.ItemDescription}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+<label className="block mb-2">GST</label>
+<input
+           type="text"
+           name="GST"
+           value={editValues.GST}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Cess</label>
+<input
+           type="text"
+           name="cess"
+           value={editValues.Cess}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">HSN Code</label>
+<input
+           type="text"
+           name="HsnCode"
+           value={editValues.HSNCode}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Batch Num</label>
+<input
+           type="text"
+           name="BatchNum"
+           value={editValues.BatchNum}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Bar Code</label>
+<input
+           type="text"
+           name="BarCode"
+           value={editValues.BarCode}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">CAT Number</label>
+<input
+           type="text"
+           name="CATNumber"
+           value={editValues.CAT_Number}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Item Code</label>
+<input
+           type="text"
+           name="ItemCode"
+           value={editValues.ItemCode}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Serial Number</label>
+<input
+           type="text"
+           name="SerialNumber"
+           value={editValues.SerialNumber}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Manufacture Date</label>
+<input
+           type="text"
+           name="ManufactureDate"
+           value={editValues.ManufactureDate}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Expiry Date</label>
+<input
+           type="text"
+           name="ExpiryDate"
+           value={editValues.ExpiryDate}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Rate</label>
+<input
+           type="text"
+           name="Rate"
+           value={editValues.Rate}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+<div className="mb-4">
+<label className="block mb-2">Unit</label>
+<input
+           type="text"
+           name="Unit"
+           value={editValues.Unit}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+            <div className="mb-4">
+              <label className="block mb-1">Item Type:</label>
+              <select
+                name="ItemType"
+                value={selectedItemType}
+                onChange={(e) => setSelectedItemType(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded"
+              >
+                <option value="">Select Item Type</option>
+                {itemTypes.map((type) => (
+                  <option key={type.ItemType} value={type.ItemType}>
+                    {type.ItemType},
+                    {type.Id}
+                  </option>
+                ))}
+              </select>
+              <div className="mb-4">
+<label className="block mb-2">Warranty Period</label>
+<input
+           type="text"
+           name="WarrantyPeriod"
+           value={editValues.WarrantyPeriod}
+           onChange={handleChange}
+           className="border px-4 py-2 w-full"
+         />
+</div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={handleSaveEdit}
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditItem(null)}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block mb-2">HSN Code</label>
-            <input
-              type="text"
-              name="HSNCode"
-              value={editValues.HSNCode}
-              onChange={handleChange}
-              className="border px-4 py-2 w-full"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">GST</label>
-            <input
-              type="text"
-              name="GST"
-              value={editValues.GST}
-              onChange={handleChange}
-              className="border px-4 py-2 w-full"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">Code</label>
-            <input
-              type="text"
-              name="Code"
-              value={editValues.Code}
-              onChange={handleChange}
-              className="border px-4 py-2 w-full"
-            />
-          </div>
-          <button onClick={handleSaveEdit} className="bg-blue-500 text-white px-4 py-2 rounded-md">
-            Save
-          </button>
-          <button onClick={() => setEditItem(null)} className="bg-red-500 text-white px-4 py-2 rounded-md ml-2">
-            Cancel
-          </button>
         </div>
       )}
       {changesMade && (
-        <div className="text-center mt-4">
-          <button onClick={handleSaveChanges} className="bg-green-500 text-white px-4 py-2 rounded-md">
-            Save Changes
-          </button>
+        <div className="fixed bottom-4 right-4 bg-yellow-500 text-white px-4 py-2 rounded cursor-pointer flex items-center shadow-md" onClick={handleSaveChanges}>
+          <IoReload size={20} className="mr-2" />
+          <span>Save Changes</span>
         </div>
       )}
     </div>
   );
 }
 
-export default AllItemShow;
+export default AllProductShow;

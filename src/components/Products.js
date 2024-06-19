@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { FaShoppingBag } from 'react-icons/fa';
+import { FaRupeeSign, FaShoppingBag } from 'react-icons/fa';
 import ProductModal from './Modals/ProductModal';
+import './Products1.css'; // Import custom CSS for additional animations
 
 function Products({ product, bg }) {
   const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <>
       <ProductModal
@@ -12,43 +14,49 @@ function Products({ product, bg }) {
         product={product}
       />
       <div
-        onClick={() => {
-          setModalOpen(!modalOpen);
-        }}
-        className="cursor-pointer rounded border border-main p-4 bg-white hover:shadow-lg transitions"
+        onClick={() => setModalOpen(true)}
+        className="product-card cursor-pointer rounded border border-main p-4 bg-white hover:shadow-lg transition-shadow duration-300"
       >
-        {bg ? (
-          <div className="bg-deepGray cursor-pointer rounded w-full h-52 p-10 relative">
-            <img
-              alt={product?.image}
-              src={`/images/${product?.image}`}
-              className="w-full hover:scale-105 transitions h-full object-contain"
-            />
-            {product.flashSale && (
-              <div className="absolute z-10 top-3 text-xs py-1 px-3 font-bold left-3 bg-flash rounded-full text-white">
-                {product.discount}% OFF
-              </div>
-            )}
-          </div>
-        ) : (
-          <img
-            alt={product?.title}
-            src={`images/${product?.image}`}
-            className="w-full h-40 object-contain"
-          />
-        )}
-
-        <h3 className="font-semibold my-2">{product?.title}</h3>
-        <div className="flex justify-between items-center gap-2">
-          {product.flashSale ? (
-            <h2 className="text-lg font-black">
-              ${product.salePrice}{' '}
-              <del className="text-text font-medium"> {product.price}</del>
-            </h2>
+        <div className="relative">
+          {bg ? (
+            <div className="w-full h-52 bg-white cursor-pointer rounded overflow-hidden">
+              <img
+                alt={product?.title}
+                src={`/images/${product?.image}`}
+                className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+              />
+              {product.flashSale && (
+                <div className="absolute top-3 left-3 z-10 px-3 py-1 text-xs font-bold text-white bg-flash rounded-full">
+                  {product.discount}% OFF
+                </div>
+              )}
+            </div>
           ) : (
-            <h2 className="text-lg font-black">${product?.price}</h2>
+            <img
+              alt={product?.title}
+              src={`/images/${product?.image}`}
+              className="object-contain w-full h-40 transition-transform duration-300 hover:scale-105"
+            />
           )}
-          <button className="w-8 h-8 text-sm flex-colo transitions hover:bg-subMain rounded-md bg-main text-white">
+        </div>
+        <h3 className="my-2 font-semibold text-center">{product?.title}</h3>
+        <div className="flex items-center justify-between">
+          {product.flashSale ? (
+            <div className="flex items-center text-lg font-black">
+              <FaRupeeSign className="mr-1" />
+              {product.salePrice}
+              <del className="flex items-center ml-2 font-medium text-text">
+                <FaRupeeSign className="mr-1" />
+                {product.price}
+              </del>
+            </div>
+          ) : (
+            <div className="flex items-center text-lg font-black">
+              <FaRupeeSign className="mr-1" />
+              {product.price}
+            </div>
+          )}
+          <button className="bg-main rounded-md transition hover:bg-subMain relative">
             <FaShoppingBag />
           </button>
         </div>

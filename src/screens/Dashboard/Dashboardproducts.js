@@ -3,8 +3,19 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MdDeleteForever } from "react-icons/md";
 import { BaseUrl } from '../../Config/config';
+import { useNavigate } from 'react-router-dom';
 
 function DashboardProducts() {
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const tokenadmin = localStorage.getItem('token admin');
+      if (!tokenadmin) {
+          navigate('/AdminLogin');
+      }
+  }, [navigate]);
+
   const [tableData, setTableData] = useState([]); // Ensure tableData is initialized as an empty array
 
   // Load data from localStorage on component mount

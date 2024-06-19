@@ -44,6 +44,9 @@ import AllItemShow from './screens/Dashboard/itemmaster/AllItemShow';
 import AllProductShow from './screens/Dashboard/itemmaster/AllProductShow';
 import Login from './components/Modals/Login';
 import AdminSettings from './adminlogin/AdminSettings';
+import ShopItems from './screens/ShopItems';
+import Products from './components/Products';
+import Flashproduct from './components/Home/Flashproduct';
 
 
 function App() {
@@ -85,6 +88,9 @@ function App() {
           <Route path='/AllProductShow' element={<AllProductShow />} />
           <Route path='/LoginMobile' element={<LoginMobile />} />
           <Route path='/AdminSettings' element={< AdminSettings />} />
+          <Route path='/ShopItems' element={<ShopItems />} />
+          <Route path='/Products' element={<Products />} />
+          <Route path='/Flashproduct' element={<Flashproduct />} />
 
 
 

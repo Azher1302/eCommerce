@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaUserSecret, FaUser} from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
+import { FaUserSecret, FaUser } from "react-icons/fa";
+import { MdDashboard, MdFolderDelete } from "react-icons/md";
 import { IoSettings, IoHome } from "react-icons/io5";
 import axios from 'axios';
-import { MdFolderDelete } from "react-icons/md";
 import { BaseUrl } from '../../Config/config';
+import { useNavigate } from 'react-router-dom';
 
 function AdminDashboard() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [loggedInUsers, setLoggedInUsers] = useState(0);
   const [deletedCount, setDeletedCount] = useState(0);
   const token = localStorage.getItem('token') || '';
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const tokenadmin = localStorage.getItem('token admin');
+    if (!tokenadmin) {
+      navigate('/AdminLogin');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const storedUsers = localStorage.getItem('totalUsers');
@@ -43,16 +51,16 @@ function AdminDashboard() {
       );
       console.log('API Response:', response.data);
       // Adjust the following line based on the actual response structure
-      setLoggedInUsers(response.data.loggedInUsers); 
+      setLoggedInUsers(response.data.loggedInUsers);
     } catch (error) {
       console.error('Error fetching logged-in user count:', error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <div className="bg-gray-800 text-white h-screen w-64 flex flex-col justify-between">
+      <div className="bg-gray-800 text-white h-64 lg:h-screen w-full lg:w-64 flex flex-col justify-between">
         <div className="p-4">
           <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
           <ul className="space-y-2">
@@ -87,31 +95,23 @@ function AdminDashboard() {
         </div>
       </div>
       {/* Main Content */}
-      <div className="flex-grow p-10">
-        <h1 className="text-3xl font-semibold mb-6">Welcome to Admin Dashboard</h1>
-        <div className="grid grid-cols-3 gap-6">
+      <div className="flex-grow p-6 lg:p-10">
+        <h1 className="text-2xl lg:text-3xl font-semibold mb-4 lg:mb-6">Welcome to Admin Dashboard</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Card for Total Users */}
-          <div className="bg-white rounded-lg p-6 shadow-md flex items-center">
-            <FaUserSecret className="text-black-500 mr-7 h-10 w-12" />
+          <div className="bg-white rounded-lg p-4 lg:p-6 shadow-md flex items-center">
+            <FaUserSecret className="text-black-500 mr-4 lg:mr-7 h-8 w-8 lg:h-10 lg:w-12" />
             <div>
-              <h2 className="text-xl font-semibold mb-1">Total Users</h2>
-              <p className="text-4xl font-bold">{totalUsers}</p>
+              <h2 className="text-lg lg:text-xl font-semibold mb-1">Total Users</h2>
+              <p className="text-3xl lg:text-4xl font-bold">{totalUsers}</p>
             </div>
           </div>
-          {/* Card for Logged-in Users */}
-          {/* <div className="bg-white rounded-lg p-6 shadow-md flex items-center">
-            <FaUserSecret className="text-black-500 mr-7 h-10 w-12" />
-            <div>
-              <h2 className="text-xl font-semibold mb-1">Logged-in Users</h2>
-              <p className="text-4xl font-bold">{loggedInUsers}</p>
-            </div>
-          </div> */}
           {/* Card for Deleted Items Count */}
-          <div className="bg-white rounded-lg p-6 shadow-md flex items-center">
-            <MdFolderDelete  className="text-black-500 mr-7 h-10 w-12" />
+          <div className="bg-white rounded-lg p-4 lg:p-6 shadow-md flex items-center">
+            <MdFolderDelete className="text-black-500 mr-4 lg:mr-7 h-8 w-8 lg:h-10 lg:w-12" />
             <div>
-              <h2 className="text-xl font-semibold mb-1">Deleted Items</h2>
-              <p className="text-4xl font-bold">{deletedCount}</p>
+              <h2 className="text-lg lg:text-xl font-semibold mb-1">Deleted Items</h2>
+              <p className="text-3xl lg:text-4xl font-bold">{deletedCount}</p>
             </div>
           </div>
         </div>

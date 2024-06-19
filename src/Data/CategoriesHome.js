@@ -4,19 +4,23 @@ export const CategoriesHome = [
     images: [
       {
         img: 'lunch.png',
-        name: 'Lunch',
+        name: 'LUNCH',
+        type: 'LUNCH'
       },
       {
         img: 'salad.png',
         name: 'Salad',
+        type: 'Salad'
       },
       {
         img: 'breakfast.png',
         name: 'Breakfast',
+        type: 'Breakfast'
       },
       {
         img: 'dinner.png',
-        name: 'Dinner',
+        name: 'DINNER',
+        type: 'DINNER'
       },
     ],
   },
@@ -26,18 +30,22 @@ export const CategoriesHome = [
       {
         img: 'juice.png',
         name: 'Juices',
+        type: 'JUICE'
       },
       {
         img: 'soda.png',
         name: 'Soda',
+        type: 'SODA'
       },
       {
         img: 'cocktailes.png',
-        name: 'Cocktailes',
+        name: 'Cockatiels',
+        type: 'COCKTAILS'
       },
       {
         img: 'beers.png',
         name: 'Beers',
+        type: 'BEERS'
       },
     ],
   },
@@ -47,18 +55,22 @@ export const CategoriesHome = [
       {
         img: 'apple.png',
         name: 'Apple',
+        type: 'APPLE'
       },
       {
         img: 'pineapple.png',
         name: 'Pineapple',
+        type: 'PINEAPPLE'
       },
       {
         img: 'watermelon.png',
         name: 'Watermelon',
+        type: 'WATERMELON'
       },
       {
         img: 'strawberries.png',
         name: 'Strawberries',
+        type: 'STRAWBERRIES'
       },
     ],
   },

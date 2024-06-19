@@ -3,6 +3,7 @@ import MainModal from './MainModal';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import { FaCartShopping } from "react-icons/fa6";
 import { toast } from 'react-toastify';
+import { FaRupeeSign } from 'react-icons/fa';
 
 const ProductModal = ({ modalOpen, setModalOpen, product }) => {
   const [item, setItem] = useState(1);
@@ -73,14 +74,19 @@ const ProductModal = ({ modalOpen, setModalOpen, product }) => {
             </div>
             <div className="flex items-center">
               {product.flashSale ? (
-                <h2 className="text-xl font-bold">
-                  $ {product.salePrice}
-                  <del className="text-text ml-3 text-sm font-medium">
+                <h2 className="text-xl font-bold flex items-center">
+                  <FaRupeeSign className="mr-1" />
+                  {product.salePrice}
+                  <del className="text-text ml-3 text-sm font-medium flex items-center">
+                    <FaRupeeSign className="mr-1" />
                     {product.price}.00
                   </del>
                 </h2>
               ) : (
-                <h2 className="text-xl font-bold">$ {product.price}</h2>
+                <div className="flex items-center text-lg font-black">
+                  <FaRupeeSign className="mr-1" />
+                  {product.price}
+                </div>
               )}
             </div>
             <div className="grid sm:grid-cols-5 gap-3 items-center">

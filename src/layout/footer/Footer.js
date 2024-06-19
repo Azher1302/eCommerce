@@ -28,7 +28,7 @@ function Footer() {
       title: 'Top Category',
       links: [
         {
-          link: '/category/Lunch',
+          link: '/category/LUNCH',
           name: 'Lunch',
         },
         {
@@ -40,7 +40,7 @@ function Footer() {
           name: 'Breakfast',
         },
         {
-          link: '/category/Dinner',
+          link: '/category/DINNER',
           name: 'Dinner',
         },
       ],
@@ -56,14 +56,7 @@ function Footer() {
           link: '/Table',
           name: 'My Orders',
         },
-        {
-          link: '/profile',
-          name: 'Updated Profile',
-        },
-        {
-          link: '/password',
-          name: 'Change Password',
-        },
+      
       ],
     },
   ];

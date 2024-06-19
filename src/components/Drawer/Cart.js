@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { IoBagCheckOutline, IoClose } from 'react-icons/io5';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MainDrawer from './MainDrawer';
-import CartIcon from './CartIcon ';
+import toast from 'react-hot-toast';
 
 function Cart({ cartDrawerOpen, closeCartDrawer }) {
   const [items, setItems] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -62,15 +63,27 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     setItems(updatedItems);
     updateLocalStorage(updatedItems);
     updateTotalQuantity(updatedItems);
-    // window.location.reload();
+    window.location.reload(); 
+    
+  };
+
+  const handleProceedToCheckout = () => {
+    if (items.length === 0) {
+      toast.error('There are no items in the cart');
+    } else {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/');
+        toast.error('Your are not logged in ! ')
+      } else {
+        navigate('/checkout');
+      }
+      closeCartDrawer();
+    }
   };
 
   return (
     <>
-      {/* Example placement of CartIcon component */}
-
-      
-
       <MainDrawer DrawerOpen={cartDrawerOpen} closeDrawer={closeCartDrawer}>
         <div className="flex flex-col w-full h-full justify-between items-middle bg-white rounded cursor-pointer">
           <div className="w-full flex justify-between items-center relative px-5 py-4 border-b bg-deepest border-deepGray">
@@ -88,7 +101,6 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
             </button>
           </div>
 
-          {/* cart items */}
           <div className="overflow-y-scroll flex-grow scrollbar-hide w-full max-h-full">
             {items.map((item, index) => (
               <div key={index} className="grid grid-cols-8 gap-2 my-6 items-center">
@@ -131,18 +143,15 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
             ))}
           </div>
 
-          {/* checkout Button */}
-          <Link
-            to="/checkout"
-            onClick={closeCartDrawer}
+          <button
+            onClick={handleProceedToCheckout}
             className="w-full hover:bg-subMain transitions py-3 px-3 bg-main flex items-center justify-between text-sm sm:text-base text-white"
           >
             <span className="align-middle font-medium">Proceed To Checkout</span>
             <span className="rounded-md font-bold py-2 px-3 bg-white text-subMain">
-              {/* Calculate total price */}
               ${items.reduce((total, item) => total + item.price * item.quantity, 0)}
             </span>
-          </Link>
+          </button>
         </div>
       </MainDrawer>
     </>

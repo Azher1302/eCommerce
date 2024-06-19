@@ -7,7 +7,6 @@ import { HiOutlineUserGroup } from 'react-icons/hi';
 import { BiPhoneCall, BiHelpCircle } from 'react-icons/bi';
 import { MdSecurity } from 'react-icons/md';
 import { BsFileEarmarkMedical } from 'react-icons/bs';
-// import './Drawer.css';
 
 function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
   const active = 'bg-deepGray';
@@ -48,15 +47,17 @@ function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
     <MainDrawer DrawerOpen={mobileDrawerOpen} closeDrawer={toggleMobileDrawer}>
       <div className="flex flex-col w-full h-full justify-between items-center bg-white rounded cursor-pointer">
         <div className="w-full flex justify-between items-center h-16 px-6 py-4 bg-main text-white border-b border-gray-100">
-          <h2 className="font-semibold font-serif text-lg m-0 text-heading flex items-center">
+          {/* Logo Section */}
+          {/* <h2 className="font-semibold font-serif text-lg m-0 text-heading flex items-center">
             <Link onClick={toggleMobileDrawer} to="/">
               <img
                 className="w-40 h-40 object-contain"
-                src="/images/logo2.png"
+                src="/images/initlogo1.png"
                 alt="logo"
               />
             </Link>
-          </h2>
+          </h2> */}
+          {/* Close Button */}
           <button
             onClick={toggleMobileDrawer}
             className="flex text-xl items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-red-500 p-2 focus:outline-none transition-opacity hover:bg-red-50 hover:text-red-600"
@@ -65,9 +66,10 @@ function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
             <IoClose />
           </button>
         </div>
-
+        
         <div className="overflow-y-scroll flex-grow scrollbar-hide w-full max-h-full">
           <div className="flex flex-col gap-10">
+            {/* Category Section */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
               {CategoriesData.map((c) => (
                 <NavLink
@@ -88,6 +90,7 @@ function MobileDrawer({ mobileDrawerOpen, toggleMobileDrawer }) {
               ))}
             </div>
             <hr />
+            {/* Links Section */}
             <div className="pb-12 px-4">
               {Links.map((l, i) => (
                 <NavLink

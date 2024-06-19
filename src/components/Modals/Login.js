@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MainModal from './MainModal';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { BaseUrl } from '../../Config/config';
@@ -31,13 +31,28 @@ function Login({ modalOpen, setModalOpen }) {
   };
 
   const handleLoginSuccess = () => {
-    toast.success('Login successful!');
+    toast.success('Login successful!', {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 2000,
+      className: 'text-sm', // Custom class for smaller size
+    });
     updateTotalUsersCount(); // Update total users count
     navigate('/'); // Navigate to AdminDashboard route
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if there is already a token in local storage
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      toast.info('You are already logged in!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 2000,
+        className: 'text-sm', // Custom class for smaller size
+      });
+      return;
+    }
 
     try {
       if (userName === 'superAdmin' && password === 'admin') {
@@ -46,8 +61,7 @@ function Login({ modalOpen, setModalOpen }) {
       }
 
       const response = await axios.post(
-
-         BaseUrl +'api/User/Login',
+        BaseUrl + 'api/User/Login',
         { UserName: userName, Password: password }
       );
 
@@ -77,10 +91,11 @@ function Login({ modalOpen, setModalOpen }) {
       fetchData(token);
     }
   }, [token]);
+
   const fetchData = async (token) => {
     try {
       const response = await axios.get(
-         BaseUrl + 'api/User/GetUserDetails',
+        BaseUrl + 'api/User/GetUserDetails',
         {
           headers: {
             Authorization: `Bearer ${token}`, // Correctly formatted Authorization header
@@ -117,15 +132,16 @@ function Login({ modalOpen, setModalOpen }) {
               required
             />
             {error && <p className="text-red-500">{error}</p>}
-            <button type="submit" className="w-full text-center py-3 mt-2 rounded bg-green-500 text-white hover:bg-green-600">
+            <button type="submit" className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105">
               Login
             </button>
             <p className="text-center mt-2">
               Don't have an account? <Link to="/signin" className="text-blue-500">Sign up</Link>
-             </p>
+            </p>
           </form>
         </div>
       </MainModal>
+      <ToastContainer /> {/* Add ToastContainer for toast notifications */}
     </div>
   );
 }

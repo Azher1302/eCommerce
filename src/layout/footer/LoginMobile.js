@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { BaseUrl } from '../../Config/config'; // Ensure this points to your config file
 
 const LoginMobile = () => {
@@ -117,11 +117,21 @@ const LoginMobile = () => {
           <div className="flex items-center justify-between">
             <button 
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+              className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105"
             >
               Login
             </button>
-            <a href="#" className="text-blue-500 hover:text-blue-700 text-sm font-bold">Forgot Password?</a>
+            {/* <a href="#" className="text-blue-500 hover:text-blue-700 text-sm font-bold">Forgot Password?</a> */}
+            
+            <NavLink to={'/'} 
+            
+              
+              className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105"
+            >
+              Back
+           
+            </NavLink>
+            
           </div>
         </form>
       </div>

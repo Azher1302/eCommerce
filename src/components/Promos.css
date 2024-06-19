@@ -1,55 +1,79 @@
-/* Custom CSS for the Promos component */
-
 .promos-container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .promo-card {
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .promo-card:hover {
-    transform: translateY(-10px);
-  }
-  
-  .promo-text-container {
-    padding: 20px;
-  }
-  
-  .promo-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .promo-description {
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 15px;
-  }
-  
-  .promo-button {
-    padding: 10px 20px;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-  }
-  
-  .promo-button:hover {
-    background-color: rgba(255, 255, 255, 0.9);
-  }
-  
-  .text-blue-400 {
-    color: #4299e1;
-  }
-  
-  .text-main {
-    color: #6d28d9;
-  }
-  
-  .text-purple-600 {
-    color: #9f7aea;
-  }
-  
+  display: grid;
+  gap: 2.5rem;
+  margin: 5rem 0;
+}
+
+.promo-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.promo-card:hover {
+  transform: translateY(-1rem);
+}
+
+.promo-text-container {
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+
+.promo-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.promo-description {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.promo-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.promo-button:hover {
+  background-color: var(--hover-color);
+}
+
+.promo-image-container {
+  width: 100%;
+  height: 12rem;
+}
+
+.promo-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+/* Add custom colors */
+.bg-blue-400 {
+  background-color: #1e90ff;
+}
+
+.text-blue-400 {
+  color: #1e90ff;
+}
+
+
+
+.text-main {
+  color: #000000;
+}
+
+.bg-purple-600 {
+  background-color: #6a0dad;
+}
+
+.text-purple-600 {
+  color: #6a0dad;
+}

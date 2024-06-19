@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../layout/Layout';
+import { useNavigate } from 'react-router-dom';
 
 const AdminSettings = () => {
+
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const tokenadmin = localStorage.getItem('token admin');
+      if (!tokenadmin) {
+          navigate('/AdminLogin');
+      }
+  }, [navigate]);
+
   // State for form inputs
   const [formData, setFormData] = useState({
     companyName: '',

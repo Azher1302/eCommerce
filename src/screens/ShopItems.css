@@ -1,0 +1,122 @@
+/* ShopItems.css */
+.shop-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.shop-item {
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.shop-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shop-item-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.shop-item-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.shop-item-price {
+    font-size: 16px;
+    color: #ff5722;
+    margin: 4px 0;
+}
+
+.shop-item-description,
+.shop-item-expdate,
+.shop-item-mfgdate,
+.shop-item-type {
+    font-size: 14px;
+    color: #666;
+    margin: 2px 0;
+}
+
+.shop-item-button {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.shop-item-button:hover {
+    background-color: #0056b3;
+}
+/* ShopItems.css */
+.shop-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.shop-item {
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.shop-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shop-item-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.shop-item-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.shop-item-price {
+    font-size: 16px;
+    color: #ff5722;
+    margin: 4px 0;
+}
+
+.shop-item-description,
+.shop-item-expdate,
+.shop-item-mfgdate,
+.shop-item-type {
+    font-size: 14px;
+    color: #666;
+    margin: 2px 0;
+}
+
+.shop-item-button {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.shop-item-button:hover {
+    background-color: #0056b3;
+}

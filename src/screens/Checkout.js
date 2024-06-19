@@ -5,9 +5,9 @@ import Layout from '../layout/Layout';
 import { AiFillBackward } from 'react-icons/ai';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import OrderSummary from '../components/OrderSummary';
-import Table from '../components/Table';
 import { Link, useNavigate } from 'react-router-dom';
-import { CircleLoader } from 'react-spinners'; // Import spinner component from react-spinners
+import { CircleLoader } from 'react-spinners';
+import toast from 'react-hot-toast';
 
 function Checkout() {
   const [firstName, setFirstName] = useState('');
@@ -19,9 +19,9 @@ function Checkout() {
   const [country, setCountry] = useState('');
   const [zip, setZip] = useState('');
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(false); // State for loading
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUserData = JSON.parse(localStorage.getItem('userData')) || {};
@@ -40,7 +40,13 @@ function Checkout() {
 
   const handleConfirmOrder = (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when order is confirmed
+    
+    if (cartItems.length === 0) {
+      toast.error('There are no items in the cart');
+      return;
+    }
+    
+    setLoading(true);
 
     const orderData = {
       firstName,
@@ -56,10 +62,8 @@ function Checkout() {
     localStorage.setItem('orderData', JSON.stringify(orderData));
     console.log(orderData);
 
-    // Provide feedback to the user
     alert('Your order has been confirmed!');
 
-    // Clear the form fields
     setFirstName('');
     setLastName('');
     setEmail('');
@@ -70,11 +74,10 @@ function Checkout() {
     setZip('');
     setCartItems([]);
 
-    // Simulate a delay before navigating to the table page
     setTimeout(() => {
-      setLoading(false); // Set loading to false after delay
-      navigate('/Table'); // Navigate to the table page
-    }, 2000); // 2-second delay
+      setLoading(false);
+      navigate('/Table');
+    }, 2000);
   };
 
   return (
@@ -124,7 +127,6 @@ function Checkout() {
                       />
                     </div>
                   </div>
-                  {/* shipping */}
                   <div className="flex flex-col gap-6">
                     <h2 className="font-semibold text-lg">02. Shipping Details</h2>
                     <Input
@@ -158,12 +160,10 @@ function Checkout() {
                       />
                     </div>
                   </div>
-                  {/* payments */}
                   <div className="flex flex-col gap-6">
                     <h2 className="font-semibold text-lg">03. Payment Details</h2>
                     <Payments />
                   </div>
-                  {/* buttons */}
                   <div className="flex flex-col gap-6">
                     <h2 className="font-semibold text-lg">04. Place An Order</h2>
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -171,29 +171,29 @@ function Checkout() {
                         to="/shop"
                         className="w-full flex-rows gap-3 p-3 rounded text-black border-2 border-main"
                       >
-                       <AiFillBackward /> Continue Shopping
-</Link>
-<div className="sticky flex-colo gap-4 sm:p-6 py-6 px-4 rounded-md top-28 col-span-4 bg-white border border-text">
-<button
-                       type="submit"
-                       className="w-full flex-rows gap-3 p-3 hover:bg-subMain transitions rounded text-white bg-main"
-                     >
-Confirm Order <IoIosCheckmarkCircle />
-</button>
-</div>
-</div>
-</div>
-</form>
-</div>
-<div className="sticky flex-colo gap-4 sm:p-6 py-6 px-4 rounded-md top-28 col-span-4 bg-white border border-text">
-<OrderSummary order={false} cartItems={cartItems} />
-</div>
-</div>
-)}
-</div>
-</div>
-</Layout>
-);
+                        <AiFillBackward /> Continue Shopping
+                      </Link>
+                      <div className="sticky flex-colo gap-4 sm:p-6 py-6 px-4 rounded-md top-28 col-span-4 bg-white border border-text">
+                        <button
+                          type="submit"
+                          className="w-full flex-rows gap-3 p-3 hover:bg-subMain transitions rounded text-white bg-main"
+                        >
+                          Confirm Order <IoIosCheckmarkCircle />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div className="sticky flex-colo gap-4 sm:p-6 py-6 px-4 rounded-md top-28 col-span-4 bg-white border border-text">
+                <OrderSummary order={false} cartItems={cartItems} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
 }
 
 export default Checkout;

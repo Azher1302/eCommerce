@@ -2,8 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './DashboardUserSignInTable.css'; // Import your custom CSS file
+import { useNavigate } from 'react-router-dom';
 
 const DashboardUserSignInTable = () => {
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const tokenadmin = localStorage.getItem('token admin');
+      if (!tokenadmin) {
+          navigate('/AdminLogin');
+      }
+  }, [navigate]);
+
   const [userSignInData, setUserSignInData] = useState([]);
 
   useEffect(() => {

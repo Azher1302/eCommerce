@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { AiFillEye } from 'react-icons/ai';
 import ProductModal from './Modals/ProductModal';
-import { Link } from 'react-router-dom';
+import { Transition } from '@headlessui/react'; // Ensure this import is present
 
 function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -45,7 +45,7 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
   };
 
   const handleAddToCart = (product) => {
-    const updatedItems = [...items, { ...product, quantity: 1 }]; // Add quantity property
+    const updatedItems = [...items, { ...product, quantity: 1 }];
     setItems(updatedItems);
     updateLocalStorage(updatedItems);
     setModalOpen(false);
@@ -64,12 +64,14 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
 
   return (
     <>
-      <ProductModal
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        product={product}
-        handleAddToCart={handleAddToCart}
-      />
+      <Transition show={modalOpen} as={React.Fragment}>
+        <ProductModal
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          product={product}
+          handleAddToCart={handleAddToCart}
+        />
+      </Transition>
       <h2 className="font-semibold text-lg">Order Summary</h2>
       <div className="overflow-y-scroll flex-grow scrollbar-hide w-full h-72">
         {items.map((p, i) => (
@@ -84,10 +86,20 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
             <div className="col-span-4 flex flex-col text-sm gap-2">
               <h3 className="font-medium truncate">{p.title}</h3>
               <h2 className=" font-bold">${p.price}</h2>
-              <div className="flex items-center">
-                <button onClick={() => handleQuantityChange(i, -1)}>-</button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handleQuantityChange(i, -1)}
+                  className="bg-gray-200 px-2 rounded"
+                >
+                  -
+                </button>
                 <span>Quantity: {p.quantity}</span>
-                <button onClick={() => handleQuantityChange(i, 1)}>+</button>
+                <button
+                  onClick={() => handleQuantityChange(i, 1)}
+                  className="bg-gray-200 px-2 rounded"
+                >
+                  +
+                </button>
               </div>
             </div>
             <div className="col-span-1 flex-colo">
@@ -123,31 +135,24 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
           <span className=" text-gray-800 font-bold">${t.cost.toFixed(2)}</span>
         </div>
       ))}
-      <div
-        className="flex items-center justify-between text-sm w-full font-semibold text-gray-500"
-      >
+      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Total
-        <span className=" text-gray-800 font-bold">
+        <span className="text-gray-800 font-bold">
           ${(
             Totals.reduce((total, item) => total + item.cost, 0) -
             Totals.find((t) => t.name === 'Discount').cost
           ).toFixed(2)}
         </span>
       </div>
-      <Link
-        to="/checkout"
-        onClick={closeCartDrawer}
-        className="w-full hover:bg-subMain transitions py-3 px-3 bg-main flex items-center justify-between text-sm sm:text-base text-white"
-      >
+      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500 mt-4">
         <span className="align-middle font-medium">Total Payment</span>
         <span className="rounded-md font-bold py-2 px-3 bg-white text-subMain">
-          {/* Calculate total price */}
           ${(
             Totals.reduce((total, item) => total + item.cost, 0) -
             Totals.find((t) => t.name === 'Discount').cost
           ).toFixed(2)}
         </span>
-      </Link>
+      </div>
     </>
   );
 }

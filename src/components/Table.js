@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { GoEye } from 'react-icons/go';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { FaSpinner } from 'react-icons/fa';
@@ -8,6 +8,7 @@ function Table() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletedCount, setDeletedCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -60,38 +61,50 @@ function Table() {
     localStorage.setItem('deletedCount', newDeletedCount);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <FaSpinner className="animate-spin text-4xl text-main" />
+      </div>
+    );
+  }
+
+  if (cartItems.length === 0) {
+    navigate('/shop');
+    return null; // Return null to prevent rendering anything else
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-100 to-blue-300 p-10">
-      <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="font-semibold text-2xl mb-6 text-center">Cart Items</h2>
-        {loading ? (
-          <div className="flex justify-center items-center">
-            <FaSpinner className="animate-spin text-4xl text-main" />
-          </div>
-        ) : (
-          <div className="w-full relative overflow-hidden overflow-x-auto">
-            <table className="table-auto min-w-full border border-gray-200 divide-y divide-gray-200">
-              <thead>
-                <tr className="bg-gray-800">
-                  <th scope="col" className={`${Head} text-left`}>ID</th>
-                  <th scope="col" className={`${Head} text-center`}>Image</th>
-                  <th scope="col" className={`${Head} text-center`}>Title</th>
-                  <th scope="col" className={`${Head} text-center`}>Price</th>
-                  <th scope="col" className={`${Head} text-center`}>Quantity</th>
-                  <th scope="col" className={`${Head} text-center`}>Total</th>
-                  <th scope="col" className={`${Head} text-center`}>Action</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {cartItems.map((item) => (
-                  <Rows key={item.id} item={item} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+    <div className="min-h-screen bg-gradient-to-r from-blue-100 to-blue-300 p-4 md:p-10">
+      <div className="max-w-6xl mx-auto bg-white p-4 md:p-8 rounded-lg shadow-lg">
+        <h2 className="font-semibold text-2xl mb-6 text-center">My Orders</h2>
+        <div className="w-full overflow-x-auto">
+          <table className="table-auto min-w-full border border-gray-200 divide-y divide-gray-200">
+            <thead>
+              <tr className="bg-gray-800">
+                <th scope="col" className={`${Head} text-left`}>ID</th>
+                <th scope="col" className={`${Head} text-center`}>Image</th>
+                <th scope="col" className={`${Head} text-center`}>Title</th>
+                <th scope="col" className={`${Head} text-center`}>Price</th>
+                <th scope="col" className={`${Head} text-center`}>Quantity</th>
+                <th scope="col" className={`${Head} text-center`}>Total</th>
+                <th scope="col" className={`${Head} text-center`}>Action</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {cartItems.map((item) => (
+                <Rows key={item.id} item={item} />
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className="mt-4 text-center">
-          {/* <p className="text-lg font-medium">Deleted Items Count: {deletedCount}</p> */}
+          <NavLink
+            to="/"
+            className="bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-700 transition duration-150 inline-block"
+          >
+            Go to Home
+          </NavLink>
         </div>
       </div>
     </div>

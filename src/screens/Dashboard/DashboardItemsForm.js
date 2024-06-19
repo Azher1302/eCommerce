@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function DashboardItemsForm({ handleNewRowSubmit }) {
+
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const tokenadmin = localStorage.getItem('token admin');
+      if (!tokenadmin) {
+          navigate('/AdminLogin');
+      }
+  }, [navigate]);
+
   const [newRowItemName, setNewRowItemName] = useState('');
   const [newRowItemDescription, setNewRowItemDescription] = useState('');
   const [newRowGst, setNewRowGst] = useState('');

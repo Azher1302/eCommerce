@@ -18,7 +18,7 @@ export default function Filter({ total }) {
       <p className="sm:text-base text-xs">
         Total <span className="font-bold">{total && total}</span> items Found
       </p>
-      <Listbox value={selected} onChange={setSelected}>
+      {/* <Listbox value={selected} onChange={setSelected}>
         <div className="relative w-32 sm:w-64">
           <Listbox.Button className="relative bg-white w-full cursor-default rounded-lg py-3 pl-3 pr-10 text-left text-xs">
             <span className="block truncate">{selected.name}</span>
@@ -64,7 +64,7 @@ export default function Filter({ total }) {
             </Listbox.Options>
           </Transition>
         </div>
-      </Listbox>
+      </Listbox> */}
     </div>
   );
 }

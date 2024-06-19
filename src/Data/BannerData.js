@@ -8,7 +8,7 @@ export const Banners = [
     text: "It's Time For Good Breakfast",
   },
   {
-    video: '/images/home/banner3.png',
+    image: '/images/home/banner3.png',
     text: `Food Is Fuel Not Therapy `,
   },
 ];
