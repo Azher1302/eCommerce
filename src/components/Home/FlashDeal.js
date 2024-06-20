@@ -76,7 +76,7 @@ function FlashDeal() {
                       setProduct(f);
                       setModalOpen(!modalOpen);
                     }}
-                    className="bg-deepGray cursor-pointer rounded w-full h-72 p-10 relative"
+                    className="bg-white cursor-pointer rounded w-full h-72 p-10 relative"
                   >
                     <img
                       alt={f.title}
