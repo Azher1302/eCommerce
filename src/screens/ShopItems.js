@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BaseUrl } from '../Config/config';
-import ProductModal from '../components/Modals/ProductModal';
-import { FaShoppingBag } from 'react-icons/fa'; // Import FontAwesome shopping bag icon
+import { FaShoppingBag, FaRupeeSign } from 'react-icons/fa'; // Import FontAwesome icons
+import ProductModal1 from '../components/Modals/ProductModal1';
+import '../components/Products1.css'; // Ensure the CSS file path is correct
 
 const ShopItems = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [product, setProduct] = useState();
     const [error, setError] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null); // State to store selected product
@@ -65,18 +65,15 @@ const ShopItems = () => {
                 {items.map(item => (
                     <div key={item.id} className="bg-white shadow-lg rounded-lg overflow-hidden relative">
                         <div
-                            onClick={() => {
-                                setProduct(item);
-                                setModalOpen(true);
-                            }}
+                            onClick={() => openModal(item)} // Use openModal to open the modal and set the product
                             className="bg-deepGray cursor-pointer rounded w-full h-72 p-10 relative"
                         >
                             <img
                                 src={item.imageUrl}
-                                alt={item.Rate}
-                                className="w-full h-64 object-cover object-center"
+                                alt={item.ItemName}
+                                className="w-full h-64 object-cover object-center transition-transform duration-300 hover:scale-105"
                             />
-                        </div>
+                        
                         <div className="p-4">
                             <h2 className="text-xl font-semibold text-gray-800">{item.Rate}</h2>
                             <p className="text-sm text-gray-600 mt-2">Description: {item.ItemDescription}</p>
@@ -86,21 +83,31 @@ const ShopItems = () => {
                             <p className="text-sm text-gray-600">HSN Code: {item.HSNCode}</p>
                             <p className="text-sm text-gray-600">Batch Number: {item.BatchNumber}</p>
                             
-                            <button
-                                className="w-8 h-8 text-sm flex-colo transitions hover:bg-subMain rounded-md bg-main text-white"
-                                onClick={() => openModal(item)} // Pass the item to openModal function
-                            >
-                                <FaShoppingBag />
-                            </button>
-                        </div>
-                        <div className="absolute inset-0 bg-black opacity-0 hover:opacity-25 transition duration-300"></div>
-                    </div>
+                            <div className="flex items-center justify-between mt-4">
+                                <div className="flex items-center text-lg font-black">
+                                    <FaRupeeSign className="mr-1" />
+                                    {item.Rate}
+                                </div>
+                                <button
+                                    className="bg-main rounded-md transition hover:bg-subMain p-2"
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Prevent triggering the modal open
+                                        handleAddToCart(item.id);
+                                    }} // Handle add to cart
+                                >
+                                    <FaShoppingBag />
+                                </button>
+                            </div>
+                         </div>
+                         <div className="absolute inset-0 bg-black opacity-0 hover:opacity-25 transition duration-300"></div>
+                          </div>
+                     </div>
                 ))}
             </div>
 
             {/* ProductModal component */}
             {selectedProduct && (
-                <ProductModal
+                <ProductModal1
                     modalOpen={modalOpen}
                     setModalOpen={setModalOpen}
                     product={selectedProduct}

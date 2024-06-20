@@ -4,6 +4,7 @@ import { FiPlus, FiMinus } from 'react-icons/fi';
 import { FaCartShopping } from "react-icons/fa6";
 import { toast } from 'react-toastify';
 import { FaRupeeSign } from 'react-icons/fa';
+import { IoCart } from "react-icons/io5";
 
 const ProductModal = ({ modalOpen, setModalOpen, product }) => {
   const [item, setItem] = useState(1);
@@ -113,7 +114,7 @@ const ProductModal = ({ modalOpen, setModalOpen, product }) => {
                 className='group relative w-full flex justify-center py-6 px-3 border border-transparent text-sm font-bold rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300'
                 onClick={handleAddToCart}
               >
-                <FaCartShopping className="mr-2" />
+                <IoCart className="mr-2" />
               </button>
             </div>
             <div className="flex text-sm">

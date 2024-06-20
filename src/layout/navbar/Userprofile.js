@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import './profile.css';
 
 const UserProfile = () => {
@@ -17,7 +17,10 @@ const UserProfile = () => {
   }, []);
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return <div> 
+      <Navigate to='/'></Navigate>
+    
+    </div>;
   }
 
   return (

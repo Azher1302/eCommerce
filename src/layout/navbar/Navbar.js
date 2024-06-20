@@ -13,26 +13,26 @@ const Navbar = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
 
-  useEffect(() => {
-    const updateCartItemCount = () => {
-      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      const count = cartItems.reduce((total, item) => total + item.quantity, 0);
-      setCartItemCount(count);
-    };
+  // useEffect(() => {
+  //   const updateCartItemCount = () => {
+  //     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  //     const count = cartItems.reduce((total, item) => total + item.quantity, 0);
+  //     setCartItemCount(count);
+  //   };
 
-    updateCartItemCount();
+  //   updateCartItemCount();
 
-    // Listen for changes in local storage
-    const handleStorageChange = () => {
-      updateCartItemCount();
-    };
+  //   // Listen for changes in local storage
+  //   const handleStorageChange = () => {
+  //     updateCartItemCount();
+  //   };
 
-    window.addEventListener('storage', handleStorageChange);
+  //   window.addEventListener('storage', handleStorageChange);
 
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, []);
 
   const hover = 'hover:text-main transitions ';
   const Hover = ({ isActive }) => (isActive ? 'text-main' : hover);

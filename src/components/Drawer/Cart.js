@@ -63,8 +63,8 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     setItems(updatedItems);
     updateLocalStorage(updatedItems);
     updateTotalQuantity(updatedItems);
-    window.location.reload(); 
-    
+    window.location.reload();
+    // window.location.reload();
   };
 
   const handleProceedToCheckout = () => {

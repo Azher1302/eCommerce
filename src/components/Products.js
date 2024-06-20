@@ -16,7 +16,7 @@ function Products({ product, bg }) {
       <div
         onClick={() => setModalOpen(true)}
         className="product-card cursor-pointer rounded border border-main p-4 bg-white hover:shadow-lg transition-shadow duration-300"
-      >
+        >
         <div className="relative">
           {bg ? (
             <div className="w-full h-52 bg-white cursor-pointer rounded overflow-hidden">
