@@ -48,6 +48,7 @@ import ShopItems from './screens/ShopItems';
 import Products from './components/Products';
 import Flashproduct from './components/Home/Flashproduct';
 import ProductModal1 from './components/Modals/ProductModal1';
+import LoginModal from './components/Drawer/LoginModal';
 
 
 function App() {
@@ -93,6 +94,7 @@ function App() {
           <Route path='/Products' element={<Products />} />
           <Route path='/Flashproduct' element={<Flashproduct />} />
           <Route path='/ProductModal1' element={<ProductModal1 />} />
+          <Route path='/LoginModal' element={<LoginModal />} />
 
 
 

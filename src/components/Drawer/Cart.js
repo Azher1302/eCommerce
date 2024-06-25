@@ -4,11 +4,13 @@ import { FiPlus, FiMinus } from 'react-icons/fi';
 import { MdDelete } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import MainDrawer from './MainDrawer';
+import LoginModal from './LoginModal';
 import toast from 'react-hot-toast';
 
 function Cart({ cartDrawerOpen, closeCartDrawer }) {
   const [items, setItems] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,7 +66,6 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     updateLocalStorage(updatedItems);
     updateTotalQuantity(updatedItems);
     window.location.reload();
-    // window.location.reload();
   };
 
   const handleProceedToCheckout = () => {
@@ -73,12 +74,16 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     } else {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/');
-        toast.error('Your are not logged in ! ')
+        setIsLoginModalOpen(true);
+        toast.error('You are not logged in!');
+        //modal timeout 
+        setTimeout(() => {
+          setIsLoginModalOpen(false);
+        }, 3000);
       } else {
         navigate('/checkout');
+        closeCartDrawer();
       }
-      closeCartDrawer();
     }
   };
 
@@ -154,6 +159,8 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
           </button>
         </div>
       </MainDrawer>
+
+      <LoginModal isOpen={isLoginModalOpen} closeModal={() => setIsLoginModalOpen(false)} />
     </>
   );
 }

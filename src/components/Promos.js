@@ -25,24 +25,24 @@ function Promos() {
   ];
 
   return (
-    <div className="promos-container xl:grid hidden grid-cols-3 gap-10 my-20">
+    <div className="promos-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 my-20 px-4">
       {Prom.map((p, i) => (
         <div
           key={i + 1}
           className={`${p.bg} promo-card hover:-translate-y-4 rounded-xl grid grid-cols-2 gap-2`}
         >
           <div className="promo-text-container text-white py-10 pl-10 pr-2">
-            <h2 className="promo-title font-bold">{p.title}</h2>
-            <p className="promo-description">With selected items</p>
-            <Link to="/shop" className={`promo-button bg-white ${p.text}`}>
+            <h2 className="promo-title font-bold text-lg md:text-xl">{p.title}</h2>
+            <p className="promo-description text-sm md:text-base">With selected items</p>
+            <Link to="/shop" className={`promo-button bg-white ${p.text} mt-4 inline-block py-2 px-4 rounded-md text-sm md:text-base`}>
               SAVE NOW
             </Link>
           </div>
-          <div className="promo-image-container w-full h-48">
+          <div className="promo-image-container w-full h-32 md:h-48">
             <img
               alt={p.title}
               src={`images/${p.img}.png`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-r-xl"
             />
           </div>
         </div>

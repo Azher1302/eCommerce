@@ -13,26 +13,26 @@ const Navbar = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
 
-  // useEffect(() => {
-  //   const updateCartItemCount = () => {
-  //     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-  //     const count = cartItems.reduce((total, item) => total + item.quantity, 0);
-  //     setCartItemCount(count);
-  //   };
+  useEffect(() => {
+    const updateCartItemCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const count = cartItems.reduce((total, item) => total + item.quantity, 0);
+      setCartItemCount(count);
+    };
 
-  //   updateCartItemCount();
+    updateCartItemCount();
 
-  //   // Listen for changes in local storage
-  //   const handleStorageChange = () => {
-  //     updateCartItemCount();
-  //   };
+    // Listen for changes in local storage
+    const handleStorageChange = () => {
+      updateCartItemCount();
+    };
 
-  //   window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
 
-  //   return () => {
-  //     window.removeEventListener('storage', handleStorageChange);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const hover = 'hover:text-main transitions ';
   const Hover = ({ isActive }) => (isActive ? 'text-main' : hover);
@@ -80,18 +80,19 @@ const Navbar = () => {
             <NavLink to="/Adminlogin" className={Hover}>
               Admin
             </NavLink>
-            <NavLink to="/Userprofile" className={Hover}>
+            {/* <NavLink to="/Userprofile" className={Hover}>
               <button className={Hover}>
                 <ImProfile className="w-8 h-8" />
               </button>
-            </NavLink>
+            </NavLink> */}
             <button
               onClick={() => {
                 setModalOpen(!modalOpen);
               }}
               className={Hover}
             >
-              <CgUser className="w-8 h-8" />
+              <h3>Login</h3>
+              {/* <CgUser className="w-8 h-8" /> */}
             </button>
             <button onClick={toggleCartDrawer} className={`${hover} relative`}>
               <FaShoppingCart className="w-6 h-6" />

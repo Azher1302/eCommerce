@@ -15,14 +15,14 @@ function Login({ modalOpen, setModalOpen }) {
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   // Load saved user details from local storage
-  useEffect(() => {
-    const savedUserName = localStorage.getItem('savedUserName');
-    const savedPassword = localStorage.getItem('savedPassword');
-    if (savedUserName && savedPassword) {
-      setUserName(savedUserName);
-      setPassword(savedPassword);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedUserName = localStorage.getItem('savedUserName');
+  //   const savedPassword = localStorage.getItem('savedPassword');
+  //   if (savedUserName && savedPassword) {
+  //     setUserName(savedUserName);
+  //     setPassword(savedPassword);
+  //   }
+  // }, []);
 
   // Function to update total users count in local storage
   const updateTotalUsersCount = () => {
@@ -77,6 +77,19 @@ function Login({ modalOpen, setModalOpen }) {
       // Save user details in local storage
       localStorage.setItem('savedUserName', userName);
       localStorage.setItem('savedPassword', password);
+
+      // Start the timer to clear the token after 30 minutes
+      setTimeout(() => {
+        localStorage.removeItem('token');
+        toast.warn('Your session has expired. Please log in again.', {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+          className: 'text-sm', // Custom class for smaller size
+        });
+        setToken(''); // Clear the token state
+        setUserData(null); // Clear user data
+        navigate('/login'); // Navigate to login page
+      }, 10 * 60 * 1000); // 30 minutes in milliseconds
 
     } catch (err) {
       setError(err.message);

@@ -34,6 +34,7 @@ const ShopItems = () => {
             fetchItems();
         }
     }, [token]);
+    
 
     const handleAddToCart = (productId) => {
         // Placeholder function for adding to cart
@@ -45,18 +46,18 @@ const ShopItems = () => {
         setModalOpen(true); // Open the modal
     };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    // if (loading) {
+    //     return <p>Loading...</p>;
+    // }
 
-    if (error) {
-        return (
-            <div className="shop-items mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-semibold mb-8">Shop Items</h1>
-                <p className="text-lg text-gray-500 mb-6 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Coming soon</p>
-            </div>
-        );
-    }
+    // if (error) {
+    //     return (
+    //         <div className="shop-items mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    //             <h1 className="text-3xl font-semibold mb-8">Shop Items</h1>
+    //             <p className="text-lg text-gray-500 mb-6 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Coming soon</p>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="shop-items mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
