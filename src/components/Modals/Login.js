@@ -148,6 +148,7 @@ function Login({ modalOpen, setModalOpen }) {
             <button type="submit" className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105">
               Login
             </button>
+            
             <p className="text-center mt-2">
               Don't have an account? <Link to="/signin" className="text-blue-500">Sign up</Link>
             </p>

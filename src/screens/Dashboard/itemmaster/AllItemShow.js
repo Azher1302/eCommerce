@@ -38,7 +38,7 @@ function AllProductShow() {
   }, []);
 
   const fetchItems = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const response = await fetch(`${BaseUrl}api/Master/Get_All_Items`, {
         method: 'GET',
@@ -67,7 +67,7 @@ function AllProductShow() {
 
   useEffect(() => {
     const fetchItemTypes = async () => {
-      const token = localStorage.getItem('token admin');
+      const token = localStorage.getItem('tokenadmin');
       try {
         const response = await fetch(`${BaseUrl}api/Master/GetItemMaster?type=0`, {
           method: 'GET',
@@ -93,7 +93,7 @@ function AllProductShow() {
 
   const toggleItem = async itemId => {
     const newStatus = !showItems[itemId] ? 1 : 0;
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const response = await fetch(`${BaseUrl}api/Master/Disable_Enable_Item?itemId=${itemId}&Status=${newStatus}`, {
         method: 'GET',
@@ -158,13 +158,13 @@ function AllProductShow() {
   };
 
   const handleSaveEdit = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const updatedItem = {
         ...editValues,
         ItemType: selectedItemType
       };
-
+  
       const response = await fetch(`${BaseUrl}api/Master/Add_or_Update_Item`, {
         method: 'POST',
         headers: {
@@ -173,11 +173,12 @@ function AllProductShow() {
         },
         body: JSON.stringify(updatedItem)
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to save item changes');
+        const errorMessage = await response.text(); // Read the error message from the response body
+        throw new Error(`Failed to save item changes: ${errorMessage}`);
       }
-
+  
       const updatedItems = items.map(item => (item.Id === editItem ? updatedItem : item));
       setItems(updatedItems);
       setEditItem(null);
@@ -188,9 +189,9 @@ function AllProductShow() {
       toast.error('Failed to save item changes');
     }
   };
-
+  
   const handleSaveChanges = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const payload = items.map(item => ({
         ...item,
@@ -294,197 +295,89 @@ function AllProductShow() {
         </tbody>
       </table>
 
-      {editItem !== null && (
-        <div className="mt-6 p-4 border rounded shadow-md bg-white">
-          <div className="bg-white p-6 rounded-md shadow-md">
-            <h2 className="text-2xl font-bold mb-4">Edit Item</h2>
-            <div className="mb-4">
-              <label className="block mb-1">Item Name:</label>
-              <input
-                type="text"
-                name="ItemName"
-                value={editValues.ItemName}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-1">Item Description:</label>
-              <textarea
-                name="ItemDescription"
-                value={editValues.ItemDescription}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4">
-<label className="block mb-2">GST</label>
-<input
-           type="text"
-           name="GST"
-           value={editValues.GST}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Cess</label>
-<input
-           type="text"
-           name="cess"
-           value={editValues.Cess}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">HSN Code</label>
-<input
-           type="text"
-           name="HsnCode"
-           value={editValues.HSNCode}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Batch Num</label>
-<input
-           type="text"
-           name="BatchNum"
-           value={editValues.BatchNum}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Bar Code</label>
-<input
-           type="text"
-           name="BarCode"
-           value={editValues.BarCode}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">CAT Number</label>
-<input
-           type="text"
-           name="CATNumber"
-           value={editValues.CAT_Number}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Item Code</label>
-<input
-           type="text"
-           name="ItemCode"
-           value={editValues.ItemCode}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Serial Number</label>
-<input
-           type="text"
-           name="SerialNumber"
-           value={editValues.SerialNumber}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Manufacture Date</label>
-<input
-           type="text"
-           name="ManufactureDate"
-           value={editValues.ManufactureDate}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Expiry Date</label>
-<input
-           type="text"
-           name="ExpiryDate"
-           value={editValues.ExpiryDate}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Rate</label>
-<input
-           type="text"
-           name="Rate"
-           value={editValues.Rate}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-<div className="mb-4">
-<label className="block mb-2">Unit</label>
-<input
-           type="text"
-           name="Unit"
-           value={editValues.Unit}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-            <div className="mb-4">
-              <label className="block mb-1">Item Type:</label>
-              <select
-                name="ItemType"
-                value={selectedItemType}
-                onChange={(e) => setSelectedItemType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded"
-              >
-                <option value="">Select Item Type</option>
-                {itemTypes.map((type) => (
-                  <option key={type.ItemType} value={type.ItemType}>
-                    {type.ItemType},
-                    {type.Id}
-                  </option>
-                ))}
-              </select>
+      {editItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-lg w-1/2">
+            <h2 className="text-2xl mb-4">Edit Item</h2>
+            <form>
               <div className="mb-4">
-<label className="block mb-2">Warranty Period</label>
-<input
-           type="text"
-           name="WarrantyPeriod"
-           value={editValues.WarrantyPeriod}
-           onChange={handleChange}
-           className="border px-4 py-2 w-full"
-         />
-</div>
-            </div>
+                <label className="block text-gray-700">Item Name</label>
+                <input type="text" name="ItemName" value={editValues.ItemName} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Item Description</label>
+                <input type="text" name="ItemDescription" value={editValues.ItemDescription} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">GST</label>
+                <input type="text" name="GST" value={editValues.GST} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Cess</label>
+                <input type="text" name="Cess" value={editValues.Cess} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">HSN Code</label>
+                <input type="text" name="HSNCode" value={editValues.HSNCode} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Batch Num</label>
+                <input type="text" name="BatchNum" value={editValues.BatchNum} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Bar Code</label>
+                <input type="text" name="BarCode" value={editValues.BarCode} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">CAT Number</label>
+                <input type="text" name="CAT_Number" value={editValues.CAT_Number} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Item Code</label>
+                <input type="text" name="ItemCode" value={editValues.ItemCode} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Serial Number</label>
+                <input type="text" name="SerialNumber" value={editValues.SerialNumber} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Manufacture Date</label>
+                <input type="text" name="ManufactureDate" value={editValues.ManufactureDate} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Expiry Date</label>
+                <input type="text" name="ExpiryDate" value={editValues.ExpiryDate} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Rate</label>
+                <input type="text" name="Rate" value={editValues.Rate} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Unit</label>
+                <input type="text" name="Unit" value={editValues.Unit} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Item Type</label>
+                <select name="ItemType" value={selectedItemType} onChange={e => setSelectedItemType(e.target.value)} className="w-full p-2 border border-gray-300 rounded">
+                  {itemTypes.map(type => (
+                    <option key={type.Id} value={type.Id}>{type.ItemType}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Warranty Period</label>
+                <input type="text" name="WarrantyPeriod" value={editValues.WarrantyPeriod} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Model</label>
+                <input type="text" name="model" value={editValues.model} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+              </div>
+            </form>
             <div className="flex justify-end">
-              <button
-                onClick={handleSaveEdit}
-                className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setEditItem(null)}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
+              <button onClick={() => setEditItem(null)} className="bg-red-500 text-white p-2 rounded mr-2">Cancel</button>
+              <button onClick={handleSaveEdit} className="bg-green-500 text-white p-2 rounded">Save</button>
             </div>
           </div>
-        </div>
-      )}
-      {changesMade && (
-        <div className="fixed bottom-4 right-4 bg-yellow-500 text-white px-4 py-2 rounded cursor-pointer flex items-center shadow-md" onClick={handleSaveChanges}>
-          <IoReload size={20} className="mr-2" />
-          <span>Save Changes</span>
         </div>
       )}
     </div>

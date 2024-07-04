@@ -1,94 +1,85 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { BaseUrl } from '../../Config/config';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './signin.css';
 
 const SignIn = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [age, setAge] = useState('');
-  const [password, setPassword] = useState('');
-  const [avatar, setAvatar] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState('');
+  const [formData, setFormData] = useState({
+    Id: 0,
+    Name: '',
+    Email: '',
+    UserName: '',
+    Password: '',
+    Mobile: '',
+    // UserType: 1,
+  });
+
   const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
+  const storedToken = localStorage.getItem('adminToken1');
 
   const navigate = useNavigate();
-
-  const calculateAge = (dob) => {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
 
   const updateSigninUsersCount = () => {
     const totalUsersCount = parseInt(localStorage.getItem('signinUsers') || 0) + 1;
     localStorage.setItem('signinUsers', totalUsersCount);
   };
 
-  useEffect(() => {
-    if (dateOfBirth) {
-      setAge(calculateAge(dateOfBirth));
-    }
-  }, [dateOfBirth]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    updateSigninUsersCount();
-    const userData = {
-      name,
-      email,
-      phoneNumber,
-      dateOfBirth,
-      age,
-      password,
-      avatar: avatarPreview,
-    };
+    try {
+      const response = await axios.post(
+         BaseUrl + 'api/User/Add_or_Update_User',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
 
-    localStorage.setItem('signinuser', JSON.stringify(userData));
-    const existingUsers = JSON.parse(localStorage.getItem('signinuserdata')) || [];
-    existingUsers.push(userData);
-    localStorage.setItem('signinuserdata', JSON.stringify(existingUsers));
+      if (response.data.Status !== 200) {
+        throw new Error(response.data.Message);
+      }
 
-    setName('');
-    setEmail('');
-    setPhoneNumber('');
-    setDateOfBirth('');
-    setAge('');
-    setPassword('');
-    setAvatar(null);
-    setAvatarPreview('');
-    setSubmitted(true);
+      updateSigninUsersCount();
+      localStorage.setItem('signinuser', JSON.stringify(formData));
+      const existingUsers = JSON.parse(localStorage.getItem('signinuserdata')) || [];
+      existingUsers.push(formData);
+      localStorage.setItem('signinuserdata', JSON.stringify(existingUsers));
 
-    navigate('/userprofile');
+      setFormData({
+        Id: 0,
+        Name: '',
+        Email: '',
+        UserName: '',
+        Password: '',
+        Mobile: '',
+        UserType: 1,
+      });
+
+      setSubmitted(true);
+      navigate('/userprofile');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setAvatar(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setAvatar(null);
-      setAvatarPreview('');
-    }
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-    {showPassword ? <FiEyeOff /> : <FiEye />}
   };
 
   return (
@@ -102,62 +93,48 @@ const SignIn = () => {
             <label htmlFor="name">Name</label>
             <input
               id="name"
-              name="name"
+              name="Name"
               type="text"
-              autoComplete="name"
               required
               placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.Name}
+              onChange={handleChange}
             />
           </div>
           <div>
             <label htmlFor="email-address">Email address</label>
             <input
               id="email-address"
-              name="email"
+              name="Email"
               type="email"
-              autoComplete="email"
               required
               placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.Email}
+              onChange={handleChange}
             />
           </div>
           <div>
             <label htmlFor="phone-number">Phone Number</label>
             <input
               id="phone-number"
-              name="phone-number"
+              name="Mobile"
               type="tel"
-              autoComplete="tel"
               required
               placeholder="Phone Number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={formData.Mobile}
+              onChange={handleChange}
             />
           </div>
           <div>
-            <label htmlFor="date-of-birth">Date of Birth</label>
+            <label htmlFor="username">Username</label>
             <input
-              id="date-of-birth"
-              name="date-of-birth"
-              type="date"
-              autoComplete="bday"
-              required
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="age">Age</label>
-            <input
-              id="age"
-              name="age"
+              id="username"
+              name="UserName"
               type="text"
-              readOnly
-              placeholder="Age"
-              value={age}
+              required
+              placeholder="Username"
+              value={formData.UserName}
+              onChange={handleChange}
             />
           </div>
           <div>
@@ -165,38 +142,24 @@ const SignIn = () => {
             <div className="password-input-container">
               <input
                 id="password"
-                name="password"
+                name="Password"
                 type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
                 required
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.Password}
+                onChange={handleChange}
               />
               <button type="button" className="password-toggle-icon" onClick={togglePasswordVisibility}>
-              
+                {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
           </div>
-          <div>
-            <label htmlFor="avatar">Avatar</label>
-            <input
-              id="avatar"
-              name="avatar"
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-            />
-          </div>
-          {avatarPreview && (
-            <div className="flex justify-center">
-              <img src={avatarPreview} alt="Avatar Preview" className="avatar-preview" />
-            </div>
-          )}
+          {error && <p className="text-red-500">{error}</p>}
           <button type="submit">Sign in</button>
         </form>
         {submitted && <p className="text-green-500 text-center">Form submitted successfully!</p>}
       </div>
+      <ToastContainer /> {/* Add ToastContainer for toast notifications */}
     </div>
   );
 };

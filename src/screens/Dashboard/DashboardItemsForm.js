@@ -7,7 +7,7 @@ function DashboardItemsForm({ handleNewRowSubmit }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-      const tokenadmin = localStorage.getItem('token admin');
+      const tokenadmin = localStorage.getItem('tokenadmin');
       if (!tokenadmin) {
           navigate('/AdminLogin');
       }

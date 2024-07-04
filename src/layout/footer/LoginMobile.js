@@ -24,8 +24,9 @@ const LoginMobile = () => {
   }, []);
 
   const handleLoginSuccess = () => {
+   
+    // navigate('/'); // Navigate to home route
     toast.success('Login successful!');
-    navigate('/'); // Navigate to home route
   };
 
   const handleSubmit = async (e) => {
@@ -53,6 +54,7 @@ const LoginMobile = () => {
       // Save user details in local storage
       localStorage.setItem('savedUserName', userName);
       localStorage.setItem('savedPassword', password);
+   
 
     } catch (err) {
       setError(err.message);
@@ -121,17 +123,18 @@ const LoginMobile = () => {
             >
               Login
             </button>
-            {/* <a href="#" className="text-blue-500 hover:text-blue-700 text-sm font-bold">Forgot Password?</a> */}
-            
-            <NavLink to={'/'} 
-            
-              
+            <NavLink 
+              to="/"
               className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105"
             >
               Back
-           
             </NavLink>
-            
+            <NavLink 
+              to="/signin"
+              className="text-blue-500 hover:text-blue-700 text-sm font-bold"
+            >
+              Sign In
+            </NavLink>
           </div>
         </form>
       </div>

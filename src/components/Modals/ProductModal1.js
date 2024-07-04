@@ -115,7 +115,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
                 onClick={handleAddToCart}
               >
                 <FaCartShopping className="mr-2" />
-                Add to Cart
+                
               </button>
             </div>
             <div className="flex text-sm">

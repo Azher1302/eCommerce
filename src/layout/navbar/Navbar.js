@@ -1,12 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { CgUser } from 'react-icons/cg';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import { Link, NavLink } from 'react-router-dom';
 import Login from '../../components/Modals/Login';
 import { SidebarContext } from '../../Context/PopUpContex';
 import Cart from '../../components/Drawer/Cart';
-import { ImProfile } from 'react-icons/im';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const { toggleCartDrawer, cartDrawerOpen } = useContext(SidebarContext);
@@ -16,7 +14,7 @@ const Navbar = () => {
   useEffect(() => {
     const updateCartItemCount = () => {
       const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      const count = cartItems.reduce((total, item) => total + item.quantity, 0);
+      const count = cartItems.length; // Count the number of distinct products
       setCartItemCount(count);
     };
 
@@ -36,6 +34,14 @@ const Navbar = () => {
 
   const hover = 'hover:text-main transitions ';
   const Hover = ({ isActive }) => (isActive ? 'text-main' : hover);
+
+  const handleLogout = () => {
+    // Remove the token from local storage
+    localStorage.removeItem('token');
+    // Optionally, you can add more logout logic here, such as redirecting the user
+    setModalOpen(false);
+    toast.success('You have logged out successfully.');
+  };
 
   return (
     <>
@@ -77,22 +83,11 @@ const Navbar = () => {
             <NavLink to="/contact-us" className={Hover}>
               Contact
             </NavLink>
-            <NavLink to="/Adminlogin" className={Hover}>
-              Admin
-            </NavLink>
-            {/* <NavLink to="/Userprofile" className={Hover}>
-              <button className={Hover}>
-                <ImProfile className="w-8 h-8" />
-              </button>
-            </NavLink> */}
             <button
-              onClick={() => {
-                setModalOpen(!modalOpen);
-              }}
+              onClick={() => setModalOpen(!modalOpen)}
               className={Hover}
             >
               <h3>Login</h3>
-              {/* <CgUser className="w-8 h-8" /> */}
             </button>
             <button onClick={toggleCartDrawer} className={`${hover} relative`}>
               <FaShoppingCart className="w-6 h-6" />
@@ -101,6 +96,9 @@ const Navbar = () => {
                   {cartItemCount}
                 </div>
               )}
+            </button>
+            <button onClick={handleLogout} className={Hover}>
+              Logout
             </button>
           </div>
         </div>

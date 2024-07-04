@@ -9,7 +9,7 @@ function DashboardItem() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const tokenAdmin = localStorage.getItem('token admin');
+    const tokenAdmin = localStorage.getItem('tokenadmin');
     if (!tokenAdmin) {
       navigate('/AdminLogin');
     }
@@ -21,7 +21,7 @@ function DashboardItem() {
 
   useEffect(() => {
     const storedData = localStorage.getItem('tableData');
-    const storedToken = localStorage.getItem('token admin');
+    const storedToken = localStorage.getItem('tokenadmin');
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
@@ -85,7 +85,7 @@ function DashboardItem() {
   const [newRowWarrantyPeriod, setNewRowWarrantyPeriod] = useState('');
 
   const handleCreateOrUpdateData = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     const updatedTableData = [];
 
     for (let row of tableData) {

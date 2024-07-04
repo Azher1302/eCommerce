@@ -21,7 +21,7 @@ function AllProductShow() {
   }, []);
 
   const fetchItems = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const response = await fetch(`${BaseUrl}api/Master/GetItemMaster?type=0`, {
         method: 'GET',
@@ -48,7 +48,7 @@ function AllProductShow() {
 
   const toggleItem = async itemId => {
     const newStatus = !showItems[itemId] ? 1 : 0;
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const response = await fetch(`${BaseUrl}api/Master/ItemMasterEnable_or_Disable?Id=${itemId}&Status=${newStatus}`, {
         method: 'GET',
@@ -73,7 +73,7 @@ function AllProductShow() {
   };
 
   const handleDelete = async itemId => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const response = await fetch(`${BaseUrl}api/Master/DeleteItem?id=${itemId}`, {
         method: 'DELETE',
@@ -114,7 +114,7 @@ function AllProductShow() {
   };
 
   const handleSaveEdit = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const updatedItem = {
         ...editItem,
@@ -149,7 +149,7 @@ function AllProductShow() {
   };
 
   const handleSaveChanges = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     try {
       const payload = items.map(item => ({
         ...item,

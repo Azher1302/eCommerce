@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { FaRegUser } from "react-icons/fa";
-import { FaLock } from "react-icons/fa";
+import { FaRegUser, FaLock } from "react-icons/fa";
 import { BaseUrl } from '../Config/config';
 
 const AdminLogin = () => {
@@ -16,7 +15,7 @@ const AdminLogin = () => {
 
     try {
       const response = await axios.post(
-         BaseUrl + 'api/User/Login',
+        `${BaseUrl}api/User/Login`,
         { UserName: username, Password: password }
       );
 
@@ -25,11 +24,8 @@ const AdminLogin = () => {
       }
 
       const token = response.data.Token;
-      localStorage.setItem('token admin', token);
+      localStorage.setItem('tokenadmin', token);
       setToken(token); // Set the token state
-
-      // Fetch user data after setting the token
-      fetchData();
 
       // Display alert here before navigating
       window.alert('Admin logged in successfully!');
@@ -39,22 +35,22 @@ const AdminLogin = () => {
         navigate('/AdminDashboard');
       }, 200); // Adjust the time as needed
     } catch (err) {
-      // console.error('Error:', err.message);
-      window.alert('Login failed. Please Try Again');
+      window.alert('Login failed. Please try again.');
     }
   };
+
   useEffect(() => {
     if (token) {
       console.log('Token:', token); // Log the token when it's received
       // You can perform further actions with the token here
-      fetchData(token);
+      fetchData();
     }
   }, [token]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        BaseUrl + 'api/User/GetUserDetails', {
+        `${BaseUrl}api/User/GetUserDetails`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -75,37 +71,37 @@ const AdminLogin = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
-  <div className="flex items-center"> {/* Flex container for username icon and input */}
-    <FaRegUser className="text-gray-400 mr-3 h-5 w-5" /> {/* Username icon */}
-    <label htmlFor="username" className="sr-only">Username</label>
-    <input
-      id="username"
-      name="username"
-      type="text"
-      autoComplete="username"
-      required
-      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-      placeholder="Username"
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-    />
-  </div>
-  <div className="flex items-center"> {/* Flex container for password icon and input */}
-    <FaLock className="text-gray-400 mr-3 h-5 w-5" /> {/* Password icon */}
-    <label htmlFor="password" className="sr-only">Password</label>
-    <input
-      id="password"
-      name="password"
-      type="password"
-      autoComplete="current-password"
-      required
-      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-      placeholder="Password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-    />
-  </div>
-</div>
+            <div className="flex items-center">
+              <FaRegUser className="text-gray-400 mr-3 h-5 w-5" />
+              <label htmlFor="username" className="sr-only">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autoComplete="username"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center">
+              <FaLock className="text-gray-400 mr-3 h-5 w-5" />
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
 
           <div>
             <button

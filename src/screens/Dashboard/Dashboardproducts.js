@@ -10,7 +10,7 @@ function DashboardProducts() {
   const navigate = useNavigate();
 
   useEffect(() => {
-      const tokenadmin = localStorage.getItem('token admin');
+      const tokenadmin = localStorage.getItem('tokenadmin');
       if (!tokenadmin) {
           navigate('/AdminLogin');
       }
@@ -44,7 +44,7 @@ function DashboardProducts() {
   const [newRowCode, setNewRowCode] = useState('');
 
   const handleCreateOrUpdateData = async () => {
-    const token = localStorage.getItem('token admin');
+    const token = localStorage.getItem('tokenadmin');
     const updatedTableData = [];
 
     for (let row of tableData) {
