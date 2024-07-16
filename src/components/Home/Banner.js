@@ -9,7 +9,7 @@ import './Banner.css';
 
 function Banner() {
   return (
-    <div className="bg-deepGray rounded-md overflow-hidden">
+    <div className="bg-white rounded-md overflow-hidden">
       <div className="relative w-full">
         <Swiper
           direction={'vertical'}
@@ -30,13 +30,14 @@ function Banner() {
                 src={b.image}
                 className="w-full h-full object-cover rounded-md"
               />
+            <div className='flex w-4/6 sm:w-3/6 2xl:w-2/6 xl:w-5/12 absolute top-0 gap-5 lg:gap-10 flex-col md:pl-32 px-2 sm:pl-10 h-full justify-center py-12'>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.3, duration: 0.8 }}
                 className="absolute inset-0 flex flex-col justify-center items-start lg:pl-32 pl-10 py-12 text-black space-y-4"
               >
-                <h1 className="xl:text-5xl lg:text-4xl sm:text-3xl text-2xl font-bold font-poppins">
+                <h1 className="xl:text-h1 lg:text-4xl sm:text-2xl text-xl leading-relaxed lg:leading-relaxed xl:leading-normal font-bold">
                   {b.text}
                 </h1>
                 <Link
@@ -46,6 +47,7 @@ function Banner() {
                   SHOP NOW
                 </Link>
               </motion.div>
+            </div>
             </SwiperSlide>
           ))}
         </Swiper>

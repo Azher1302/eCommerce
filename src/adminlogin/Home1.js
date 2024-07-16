@@ -48,7 +48,7 @@ function Home1() {
                     </div>
                     <div className='bg-gray-100 p-6 rounded-lg flex items-center justify-between'>
                         <div>
-                            <Link to={'/AllItemShow'}>
+                            <Link to={'/AllProductShow'}>
                                 <button>
                                     <h3 className='text-lg font-semibold'>All Products</h3>
                                 </button>
@@ -58,7 +58,7 @@ function Home1() {
                     </div>
                     <div className='bg-gray-100 p-6 rounded-lg flex items-center justify-between'>
                         <div>
-                            <Link to={'/AllProductShow'}>
+                            <Link to={'/AllItemShow'}>
                                 <button>
                                     <h3 className='text-lg font-semibold'>All Item</h3>
                                 </button>

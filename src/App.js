@@ -46,9 +46,13 @@ import Login from './components/Modals/Login';
 import AdminSettings from './adminlogin/AdminSettings';
 import ShopItems from './screens/ShopItems';
 import Products from './components/Products';
+import MobileNavebar from './layout/navbar/MobileNavebar';
 import Flashproduct from './components/Home/Flashproduct';
 import ProductModal1 from './components/Modals/ProductModal1';
 import LoginModal from './components/Drawer/LoginModal';
+import Categories from './components/Home/Categories';
+import CategoriesShop from './components/Home/Categories';
+
 
 
 function App() {
@@ -95,6 +99,13 @@ function App() {
           <Route path='/Flashproduct' element={<Flashproduct />} />
           <Route path='/ProductModal1' element={<ProductModal1 />} />
           <Route path='/LoginModal' element={<LoginModal />} />
+          <Route path='/MobileNavebar' element={<MobileNavebar />} />
+          <Route path="/Categories" element={<Categories />} />
+          <Route path="/CategoriesShop" element={<CategoriesShop />} />
+
+
+  
+
 
 
 

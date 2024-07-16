@@ -59,10 +59,14 @@ function Checkout() {
       zip,
       cartItems,
     };
+
     localStorage.setItem('orderData', JSON.stringify(orderData));
     console.log(orderData);
 
     alert('Your order has been confirmed!');
+
+    // Clear the cart items from local storage
+    localStorage.removeItem('cartItems');
 
     setFirstName('');
     setLastName('');
@@ -154,7 +158,7 @@ function Checkout() {
                       <Input
                         type="text"
                         placeHolder="23456"
-                        label="ZIP"
+                        label="Pincode"
                         value={zip}
                         onChange={(e) => setZip(e.target.value)}
                       />

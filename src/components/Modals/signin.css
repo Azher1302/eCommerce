@@ -74,3 +74,19 @@
   display: flex;
   align-items: center;
 } */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 2.5rem; /* Make space for the icon */
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 0.75rem;
+  cursor: pointer;
+}

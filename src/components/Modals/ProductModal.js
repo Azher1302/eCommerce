@@ -22,11 +22,15 @@ const ProductModal = ({ modalOpen, setModalOpen, product }) => {
   const handleAddToCart = () => {
     toast.success("Added to cart");
 
+    // Retrieve the Id from local storage
+    const storedId = localStorage.getItem('Id');
+
     // Create a new cart item object
     const newCartItem = {
+      userId: storedId, // Include the user Id from local storage
       id: product._id,
       title: product.title,
-      price: product.price,
+      price: product.salePrice,
       quantity: item,
       image: product.image,
       flashSale: product.flashSale,
@@ -36,18 +40,32 @@ const ProductModal = ({ modalOpen, setModalOpen, product }) => {
     };
 
     // Retrieve existing cart items from local storage
-    let existingCartItems = JSON.parse(localStorage.getItem('cartItems'));
+    let existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    let existingCartItems2 = JSON.parse(localStorage.getItem('CartItems')) || [];
 
-    // If existingCartItems is null, initialize it as an empty array
-    if (!existingCartItems) {
-      existingCartItems = [];
+    // Check if the product is already in the cart
+    const existingProductIndex = existingCartItems.findIndex(cartItem => cartItem.id === product._id);
+    const existingProductIndex2 = existingCartItems2.findIndex(cartItem => cartItem.id === product._id);
+
+    if (existingProductIndex !== -1) {
+      // If the product exists, update its quantity
+      existingCartItems[existingProductIndex].quantity += item;
+    } else {
+      // If the product doesn't exist, add the new cart item to the existing cart items array
+      existingCartItems = [...existingCartItems, newCartItem];
     }
 
-    // Add the new cart item to the existing cart items array
-    const updatedCartItems = [...existingCartItems, newCartItem];
+    if (existingProductIndex2 !== -1) {
+      // If the product exists, update its quantity
+      existingCartItems2[existingProductIndex2].quantity += item;
+    } else {
+      // If the product doesn't exist, add the new cart item to the existing cart items array
+      existingCartItems2 = [...existingCartItems2, newCartItem];
+    }
 
     // Update the cart items in local storage
-    localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+    localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
+    localStorage.setItem('CartItems', JSON.stringify(existingCartItems2));
 
     // Refresh the page
     window.location.reload();
@@ -86,7 +104,7 @@ const ProductModal = ({ modalOpen, setModalOpen, product }) => {
               ) : (
                 <div className="flex items-center text-lg font-black">
                   <FaRupeeSign className="mr-1" />
-                  {product.price}
+                  {product.flashSale}
                 </div>
               )}
             </div>

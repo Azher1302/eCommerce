@@ -1,16 +1,40 @@
-import React, { useState } from 'react';
-import CategoriesSlides from '../components/CategoriesSlides';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+// import CategoriesShop from '../components/Home/Categories';
 import Filter from '../components/Filter';
-import Products from '../components/Products';
+import Products from '../components/Products'; // Ensure the path is correct
 import Layout from '../layout/Layout';
-import { ProductsData } from './../Data/ProductsData';
-import Promos from './../components/Promos';
+import Promos from '../components/Promos';
 import ShopItems from './ShopItems';
+import CategoriesShop from '../components/Home/Categories';
+
 
 function Shop() {
   const maxItemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(maxItemsPerPage);
   const [filteredProducts, setFilteredProducts] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.get('https://api.onlineshop.initstore.com/api/Master/Get_All_Items', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        setProducts(response.data);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 404) {
+          setError('Products not found');
+        } else {
+          setError('Error fetching products');
+        }
+        console.error('Error fetching products:', error);
+      });
+  }, []);
 
   const handleLoadMore = () => {
     setCurrentPage(currentPage + maxItemsPerPage);
@@ -20,27 +44,32 @@ function Shop() {
     if (category === 'All') {
       setFilteredProducts(null); // Show all products
     } else {
-      const filtered = ProductsData.filter((product) =>
+      const filtered = products.filter((product) =>
         product.categories.includes(category)
       );
       setFilteredProducts(filtered);
     }
   };
 
-  const displayedProducts = filteredProducts || ProductsData.slice(0, currentPage);
+  const displayedProducts = filteredProducts || products.slice(0, currentPage);
 
   return (
     <Layout>
       <div className="min-h-screen container mx-auto px-4 my-6">
-        <CategoriesSlides />
-        <Filter total={ProductsData.length} onFilter={handleFilter} />
-        <div className="grid gap-6 mt-6 sm:mt-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {displayedProducts.map((product) => (
-            <Products bg={true} key={product._id} product={product} />
-          ))}
-        </div>
-        <ShopItems />
-        {currentPage < ProductsData.length && (
+        <CategoriesShop />
+        <Filter total={products.length} onFilter={handleFilter} />
+        {/* {error ? (
+          <div className="error-message">{error}</div>
+        ) : (
+          <div className="grid gap-6 mt-6 sm:mt-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            {displayedProducts.map((product) => (
+              <Products key={product._id} product={product} />
+            ))}
+          </div>
+        )
+        } */}
+          <ShopItems />
+        {currentPage < products.length && (
           <div className="w-full flex justify-center my-12">
             <button
               onClick={handleLoadMore}
@@ -54,7 +83,9 @@ function Shop() {
             </button>
           </div>
         )}
+       
         <Promos />
+       
       </div>
     </Layout>
   );

@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
         <Navbar />
         <div className="bg-white">{children}</div>
         {/* <MobileFooter /> */}
-        <MobileFooter />
+        {/* <MobileFooter /> */}
         <Footer />
       </div>
     </>

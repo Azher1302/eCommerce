@@ -1,73 +1,101 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { BaseUrl } from '../../Config/config';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import Cookies from 'universal-cookie';
 import { toast, ToastContainer } from 'react-toastify';
+import { CSSTransition } from 'react-transition-group';
 import 'react-toastify/dist/ReactToastify.css';
+import Login from './Login';
 import './signin.css';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
-    Id: 0,
     Name: '',
     Email: '',
     UserName: '',
     Password: '',
     Mobile: '',
-    // UserType: 1,
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
-  const storedToken = localStorage.getItem('adminToken1');
-
+  const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
-  const updateSigninUsersCount = () => {
-    const totalUsersCount = parseInt(localStorage.getItem('signinUsers') || 0) + 1;
-    localStorage.setItem('signinUsers', totalUsersCount);
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await axios.post(`${BaseUrl}api/User/CheckEmail`, { email });
+      return response.data.exists;
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false;
+    }
+  };
+
+  const checkMobileExists = async (mobile) => {
+    try {
+      const response = await axios.post(`${BaseUrl}api/User/CheckMobile`, { mobile });
+      return response.data.exists;
+    } catch (error) {
+      console.error("Error checking mobile:", error);
+      return false;
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const emailExists = await checkEmailExists(formData.Email);
+    const mobileExists = await checkMobileExists(formData.Mobile);
+
+    if (emailExists) {
+      toast.error('Email is already registered!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+      return;
+    }
+
+    if (mobileExists) {
+      toast.error('Mobile number is already registered!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+      return;
+    }
+
     try {
-      const response = await axios.post(
-         BaseUrl + 'api/User/Add_or_Update_User',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`${BaseUrl}api/User/Add_or_Update_User`, formData);
 
       if (response.data.Status !== 200) {
         throw new Error(response.data.Message);
       }
 
-      updateSigninUsersCount();
-      localStorage.setItem('signinuser', JSON.stringify(formData));
-      const existingUsers = JSON.parse(localStorage.getItem('signinuserdata')) || [];
-      existingUsers.push(formData);
-      localStorage.setItem('signinuserdata', JSON.stringify(existingUsers));
+      toast.success('Form submitted successfully!', {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
 
       setFormData({
-        Id: 0,
         Name: '',
         Email: '',
         UserName: '',
         Password: '',
         Mobile: '',
-        UserType: 1,
       });
 
-      setSubmitted(true);
       navigate('/userprofile');
     } catch (err) {
-      setError(err.message);
+      toast.error(`Error: ${err.message}`, {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
     }
   };
 
@@ -96,7 +124,7 @@ const SignIn = () => {
               name="Name"
               type="text"
               required
-              placeholder="Name"
+              placeholder="Name *"
               value={formData.Name}
               onChange={handleChange}
             />
@@ -108,7 +136,7 @@ const SignIn = () => {
               name="Email"
               type="email"
               required
-              placeholder="Email address"
+              placeholder="Email address *"
               value={formData.Email}
               onChange={handleChange}
             />
@@ -118,9 +146,9 @@ const SignIn = () => {
             <input
               id="phone-number"
               name="Mobile"
-              type="tel"
+              type="number"
               required
-              placeholder="Phone Number"
+              placeholder="Phone Number *"
               value={formData.Mobile}
               onChange={handleChange}
             />
@@ -132,7 +160,7 @@ const SignIn = () => {
               name="UserName"
               type="text"
               required
-              placeholder="Username"
+              placeholder="Username *"
               value={formData.UserName}
               onChange={handleChange}
             />
@@ -145,21 +173,31 @@ const SignIn = () => {
                 name="Password"
                 type={showPassword ? 'text' : 'password'}
                 required
-                placeholder="Password"
+                placeholder="Password *"
                 value={formData.Password}
                 onChange={handleChange}
               />
-              <button type="button" className="password-toggle-icon" onClick={togglePasswordVisibility}>
+              <span
+                onClick={togglePasswordVisibility}
+                className="password-toggle-icon"
+              >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
-              </button>
+              </span>
             </div>
           </div>
-          {error && <p className="text-red-500">{error}</p>}
           <button type="submit">Sign in</button>
+          <p className="text-center mt-2">
+            Do you have an account?{' '}
+            <span onClick={() => setModalOpen(!modalOpen)} className="text-blue-500 cursor-pointer">
+              Login
+            </span>
+          </p>
         </form>
-        {submitted && <p className="text-green-500 text-center">Form submitted successfully!</p>}
       </div>
-      <ToastContainer /> {/* Add ToastContainer for toast notifications */}
+      <ToastContainer /> {/* ToastContainer for toast notifications */}
+  
+        <Login modalOpen={modalOpen} setModalOpen={setModalOpen} /> {/* Login Modal */}
+
     </div>
   );
 };

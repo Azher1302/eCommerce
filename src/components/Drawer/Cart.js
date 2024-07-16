@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { IoBagCheckOutline, IoClose } from 'react-icons/io5';
 import { FiPlus, FiMinus } from 'react-icons/fi';
+import { BaseUrl } from '../../Config/config';
 import { MdDelete } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MainDrawer from './MainDrawer';
-import LoginModal from './LoginModal';
 import toast from 'react-hot-toast';
 
 function Cart({ cartDrawerOpen, closeCartDrawer }) {
   const [items, setItems] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,26 +64,24 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     setItems(updatedItems);
     updateLocalStorage(updatedItems);
     updateTotalQuantity(updatedItems);
-    window.location.reload();
+    // closeCartDrawer(); // Close the cart drawer after deleting an item
   };
 
   const handleProceedToCheckout = () => {
+    closeCartDrawer(); // Close the cart drawer before showing any alert
+
     if (items.length === 0) {
       toast.error('There are no items in the cart');
-    } else {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setIsLoginModalOpen(true);
-        toast.error('You are not logged in!');
-        //modal timeout 
-        setTimeout(() => {
-          setIsLoginModalOpen(false);
-        }, 3000);
-      } else {
-        navigate('/checkout');
-        closeCartDrawer();
-      }
+      return;
     }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You are not logged in!');
+      return;
+    }
+
+    navigate('/checkout');
   };
 
   return (
@@ -112,7 +109,8 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
                 <div className="col-span-2 bg-deepGray rounded p-2 h-24">
                   <img
                     alt={item.title}
-                    src={`/images/${item.image}`}
+                    // src={`/images/${item.image}`}
+                    src={ BaseUrl + `api/Master/LoadItemImage?ImageName=${item.image}`}
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -159,8 +157,6 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
           </button>
         </div>
       </MainDrawer>
-
-      <LoginModal isOpen={isLoginModalOpen} closeModal={() => setIsLoginModalOpen(false)} />
     </>
   );
 }

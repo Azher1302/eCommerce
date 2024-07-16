@@ -11,20 +11,10 @@ function Login({ modalOpen, setModalOpen }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [token, setToken] = useState('');
+  const [Id, setId] = useState('');
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate(); // Initialize useNavigate hook
 
-  // Load saved user details from local storage
-  // useEffect(() => {
-  //   const savedUserName = localStorage.getItem('savedUserName');
-  //   const savedPassword = localStorage.getItem('savedPassword');
-  //   if (savedUserName && savedPassword) {
-  //     setUserName(savedUserName);
-  //     setPassword(savedPassword);
-  //   }
-  // }, []);
-
-  // Function to update total users count in local storage
   const updateTotalUsersCount = () => {
     const totalUsersCount = parseInt(localStorage.getItem('totalUsers') || 0) + 1;
     localStorage.setItem('totalUsers', totalUsersCount);
@@ -38,6 +28,9 @@ function Login({ modalOpen, setModalOpen }) {
     });
     updateTotalUsersCount(); // Update total users count
     navigate('/'); // Navigate to AdminDashboard route
+    setTimeout(() => {
+      window.location.reload(); // Full-screen hard refresh
+    }, 1000); // Adding a slight delay before the refresh
   };
 
   const handleSubmit = async (e) => {
@@ -61,7 +54,7 @@ function Login({ modalOpen, setModalOpen }) {
       }
 
       const response = await axios.post(
-        BaseUrl + 'api/User/Login',
+        `${BaseUrl}api/User/Login`,
         { UserName: userName, Password: password }
       );
 
@@ -69,14 +62,23 @@ function Login({ modalOpen, setModalOpen }) {
         throw new Error(response.data.Message);
       }
 
-      setModalOpen(false);
-      handleLoginSuccess();
       const token = response.data.Token;
-      localStorage.setItem('token', token); // Store token in local storage
-      setToken(token); // Save the token
-      // Save user details in local storage
+      // const Id = response.data.Id;
+
+      localStorage.setItem('token', token); 
+      // localStorage.setItem('Id', Id);
       localStorage.setItem('savedUserName', userName);
       localStorage.setItem('savedPassword', password);
+
+      setModalOpen(false);
+      handleLoginSuccess();
+
+      // Store token in local storage
+      setToken(token); // Save the token
+      // setId(Id);
+
+      // Fetch user details after successful login
+      fetchData(token);
 
       // Start the timer to clear the token after 30 minutes
       setTimeout(() => {
@@ -89,7 +91,7 @@ function Login({ modalOpen, setModalOpen }) {
         setToken(''); // Clear the token state
         setUserData(null); // Clear user data
         navigate('/login'); // Navigate to login page
-      }, 10 * 60 * 1000); // 30 minutes in milliseconds
+      }, 30 * 60 * 1000); // 30 minutes in milliseconds
 
     } catch (err) {
       setError(err.message);
@@ -108,13 +110,16 @@ function Login({ modalOpen, setModalOpen }) {
   const fetchData = async (token) => {
     try {
       const response = await axios.get(
-        BaseUrl + 'api/User/GetUserDetails',
+        `${BaseUrl}api/User/GetUserDetails`,
         {
           headers: {
             Authorization: `Bearer ${token}`, // Correctly formatted Authorization header
           },
         }
       );
+      const Id = response.data.Id;
+      localStorage.setItem('Id', Id);
+      setId(Id);
       setUserData(response.data);
     } catch (error) {
       setError('Error fetching user data');

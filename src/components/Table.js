@@ -5,13 +5,13 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { FaSpinner } from 'react-icons/fa';
 
 function Table() {
-  const [cartItems, setCartItems] = useState([]);
+  const [CartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletedCount, setDeletedCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const storedCartItems = JSON.parse(localStorage.getItem('CartItems')) || [];
     setCartItems(storedCartItems);
 
     const storedDeletedCount = parseInt(localStorage.getItem('deletedCount'), 10) || 0;
@@ -52,9 +52,9 @@ function Table() {
   );
 
   const handleDelete = (id) => {
-    const updatedCartItems = cartItems.filter(item => item.id !== id);
+    const updatedCartItems = CartItems.filter(item => item.id !== id);
     setCartItems(updatedCartItems);
-    localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+    localStorage.setItem('CartItems', JSON.stringify(updatedCartItems));
 
     const newDeletedCount = deletedCount + 1;
     setDeletedCount(newDeletedCount);
@@ -69,7 +69,7 @@ function Table() {
     );
   }
 
-  if (cartItems.length === 0) {
+  if (CartItems.length === 0) {
     navigate('/shop');
     return null; // Return null to prevent rendering anything else
   }
@@ -92,7 +92,7 @@ function Table() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {cartItems.map((item) => (
+              {CartItems.map((item) => (
                 <Rows key={item.id} item={item} />
               ))}
             </tbody>

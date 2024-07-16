@@ -1,0 +1,15 @@
+/* toastStyles.css */
+
+/* General toast styling */
+.custom-toast {
+    font-size: 14px; /* Default size */
+  }
+  
+  /* Mobile specific toast styling */
+  @media (max-width: 768px) {
+    .custom-toast {
+      font-size: 12px; /* Smaller font size for mobile */
+      padding: 10px;   /* Adjust padding for mobile */
+    }
+  }
+  

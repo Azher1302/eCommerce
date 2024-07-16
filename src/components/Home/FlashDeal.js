@@ -7,6 +7,7 @@ import { BsCaretLeftFill, BsCaretRightFill } from 'react-icons/bs';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper';
 import { ProductsData } from '../../Data/ProductsData';
+import './FlashDeal';
 import ProductModal from '../Modals/ProductModal';
 
 function FlashDeal() {
@@ -17,7 +18,8 @@ function FlashDeal() {
 
   const Flash = ProductsData.filter((val) => val.flashSale === true);
   const classNames =
-    'hover:bg-main transitions hover:text-white rounded-full w-10 h-10 flex-colo bg-subMain text-white shadow-xl';
+    'hover:bg-main transitions hover:text-white rounded-full w-10 h-10 flex-colo bg-subMain text-white shadow-xl pr-20 ';
+  let classNames1='hover:bg-main transitions hover:text-white rounded-full w-10 h-10 flex-colo bg-subMain text-white shadow-xl pl-22 ';
 
   const addToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem('cartflash')) || [];
@@ -29,7 +31,8 @@ function FlashDeal() {
       cart.push(product);
     }
     localStorage.setItem('cartflash', JSON.stringify(cart));
-    window.location.reload();
+    setProduct(product);
+    setModalOpen(true);
   };
 
   return (
@@ -39,9 +42,9 @@ function FlashDeal() {
         setModalOpen={setModalOpen}
         product={product}
       />
-      <div className="my-12">
+      <div className="my-12 relative">
         <Titles title="Flash Deals" Icon={MdLocalOffer} />
-        <div className="mt-10">
+        <div className="mt-10 relative pl-16 ">
           <Swiper
             slidesPerView={4}
             spaceBetween={40}
@@ -70,14 +73,14 @@ function FlashDeal() {
           >
             {Flash.map((f) => (
               <SwiperSlide key={f._id}>
-                <div className="p-4 border border-main rounded-lg hover:shadow-lg transitions">
-                  <div
-                    onClick={() => {
-                      setProduct(f);
-                      setModalOpen(!modalOpen);
-                    }}
-                    className="bg-white cursor-pointer rounded w-full h-72 p-10 relative"
-                  >
+                <div
+                  className="p-4 border border-main rounded-lg hover:shadow-lg transitions"
+                  onClick={() => {
+                    setProduct(f);
+                    setModalOpen(true);
+                  }}
+                >
+                  <div className="bg-white cursor-pointer rounded w-full h-72 p-10 relative">
                     <img
                       alt={f.title}
                       src={`/images/${f.image}`}
@@ -99,7 +102,10 @@ function FlashDeal() {
                       </h2>
                       <button
                         className="w-8 h-8 text-sm flex-colo transitions hover:bg-subMain rounded-md bg-main text-white"
-                        onClick={() => addToCart(f)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent the modal from opening when the button is clicked
+                          addToCart(f);
+                        }}
                       >
                         <FaShoppingBag />
                       </button>
@@ -108,15 +114,18 @@ function FlashDeal() {
                 </div>
               </SwiperSlide>
             ))}
-            <div className="w-full px-1 z-50 absolute top-2/4 justify-between flex">
-              <button className={classNames} ref={(node) => setPrevEl(node)}>
-                <BsCaretLeftFill />
-              </button>
-              <button className={classNames} ref={(node) => setNextEl(node)}>
-                <BsCaretRightFill />
-              </button>
-            </div>
           </Swiper>
+          <div className="w-full px-1 z-50 absolute top-2/4 justify-between flex">
+            <button className={classNames} ref={(node) => setPrevEl(node)}>
+              <BsCaretLeftFill />
+            </button>
+       
+          
+             <button className={classNames1} ref={(node) => setNextEl(node)}>
+              <BsCaretRightFill />
+             </button>
+           </div>
+          
         </div>
       </div>
     </>
