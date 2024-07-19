@@ -5,7 +5,8 @@ import { BaseUrl } from '../../Config/config';
 import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import MainDrawer from './MainDrawer';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast'; // Import Toaster from react-hot-toast
+// import './Cart.css'; // Custom CSS for toast styling
 
 function Cart({ cartDrawerOpen, closeCartDrawer }) {
   const [items, setItems] = useState([]);
@@ -64,14 +65,14 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     setItems(updatedItems);
     updateLocalStorage(updatedItems);
     updateTotalQuantity(updatedItems);
-    // closeCartDrawer(); // Close the cart drawer after deleting an item
+    closeCartDrawer(); // Close the cart drawer after deleting an item
   };
 
   const handleProceedToCheckout = () => {
     closeCartDrawer(); // Close the cart drawer before showing any alert
 
     if (items.length === 0) {
-      toast.error('There are no items in the cart');
+      toast.error('No product is this category');
       return;
     }
 
@@ -109,8 +110,7 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
                 <div className="col-span-2 bg-deepGray rounded p-2 h-24">
                   <img
                     alt={item.title}
-                    // src={`/images/${item.image}`}
-                    src={ BaseUrl + `api/Master/LoadItemImage?ImageName=${item.image}`}
+                    src={BaseUrl + `api/Master/LoadItemImage?ImageName=${item.image}`}
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -157,6 +157,7 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
           </button>
         </div>
       </MainDrawer>
+      <Toaster position="top-center" reverseOrder={false} /> {/* Configure toast position */}
     </>
   );
 }

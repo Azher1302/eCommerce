@@ -4,6 +4,7 @@ import { AiFillEye } from 'react-icons/ai';
 import { FaRupeeSign } from 'react-icons/fa'; // Import the rupee icon
 import ProductModal from './Modals/ProductModal';
 import { Transition } from '@headlessui/react';
+import { BaseUrl } from '../Config/config';
 
 function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -45,10 +46,11 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
   };
 
   const subtotal = items.length ? items.reduce((total, item) => total + item.price * item.quantity, 0) : 0;
-  const tax = 5;
+  const totalGST = items.length ? items.reduce((total, item) => total + (item.GST * item.price * item.quantity / 100), 0) : 0;
+
   const shipping = 45;
   const discount = 23;
-  const total = items.length ? subtotal + tax + shipping - discount : 0;
+  const total = items.length ? subtotal + totalGST + shipping - discount : 0;
 
   return (
     <>
@@ -68,7 +70,7 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
               <div className="col-span-2 bg-deepGray rounded p-2 h-24">
                 <img
                   alt={p.title}
-                  src={`/images/${p.image}`}
+                  src={ BaseUrl + `api/Master/LoadItemImage?ImageName=${p.image}`}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -129,23 +131,23 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
         </span>
       </div>
       <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
-        Tax
+        Tax (GST)
         <span className="text-gray-800 font-bold flex items-center">
-          <FaRupeeSign /> {tax.toFixed(2)}
+          <FaRupeeSign /> {totalGST.toFixed(2)}
         </span>
       </div>
-      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
+      {/* <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Shipping
         <span className="text-gray-800 font-bold flex items-center">
           <FaRupeeSign /> {shipping.toFixed(2)}
         </span>
-      </div>
-      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
+      </div> */}
+      {/* <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Discount
         <span className="text-gray-800 font-bold flex items-center">
           <FaRupeeSign /> {discount.toFixed(2)}
         </span>
-      </div>
+      </div> */}
       <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Total
         <span className="text-gray-800 font-bold flex items-center">

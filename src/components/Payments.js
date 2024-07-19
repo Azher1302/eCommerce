@@ -5,9 +5,9 @@ import { Bitcoin, PayPal, Stripe } from './SelectedsPayments';
 
 const Payment = [
   { name: 'Select Payment Method' },
-  { name: 'PayPal' },
-  { name: 'Stripe' },
-  { name: 'Cypto Currency' },
+  { name: 'cash on delevery' },
+  { name: 'g pay' },
+  { name: ' ' },
 ];
 
 function Payments() {

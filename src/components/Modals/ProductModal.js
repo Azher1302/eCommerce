@@ -28,10 +28,11 @@ const ProductModal = ({ modalOpen, setModalOpen, product }) => {
     // Create a new cart item object
     const newCartItem = {
       userId: storedId, // Include the user Id from local storage
-      id: product._id,
+      id: product.GST,
       title: product.title,
       price: product.salePrice,
       quantity: item,
+      Gst:product.GST,
       image: product.image,
       flashSale: product.flashSale,
       flashSalePrice: product.flashSalePrice,

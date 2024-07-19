@@ -29,7 +29,7 @@ function Login({ modalOpen, setModalOpen }) {
     updateTotalUsersCount(); // Update total users count
     navigate('/'); // Navigate to AdminDashboard route
     setTimeout(() => {
-      window.location.reload(); // Full-screen hard refresh
+      // window.location.reload(); // Full-screen hard refresh
     }, 1000); // Adding a slight delay before the refresh
   };
 

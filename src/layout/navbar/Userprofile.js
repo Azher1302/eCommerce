@@ -1,83 +1,85 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import './profile.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BaseUrl } from '../../Config/config';
+import Login from '../../components/Modals/Login';
+import { Transition } from 'react-transition-group';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserProfile = () => {
-  const { userId } = useParams();
-  const [userData, setUserData] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    const storedUserData = JSON.parse(localStorage.getItem('signinuser'));
-    if (storedUserData) {
-      setUserData(storedUserData);
-    } else {
-      console.error('User data not found');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setModalOpen(true); // Open login modal if token is not present
+      setLoading(false);
+      return;
     }
+
+    axios.get(BaseUrl + `api/User/GetUserDetails`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then((response) => {
+        setUserDetails(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError('Error fetching user details');
+        setLoading(false);
+      });
   }, []);
 
-  if (!userData) {
-    return <div> 
-      <Navigate to='/'></Navigate>
-    
-    </div>;
-  }
+  const openModal = () => {
+    setModalOpen(true);
+  };
 
+  const closeLoginModal = () => {
+    setModalOpen(false);
+  };
+
+  // const handleLogin = () => {
+  //   toast.info('Opening login modal...');
+  //   openModal();
+  // };
+
+  // if (loading) return <div className="text-center text-lg text-gray-700">Loading...</div>;
+  if (error) return (
+    <div className="text-center text-red-500">
+      Error: {error}
+    </div>
+  );
+
+  // Render user details only if userDetails is not null
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 p-4">
-      <div className="profile-container bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition duration-500 hover:scale-105">
-        <div className="relative w-32 h-32 mx-auto mb-6">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 p-1 animate-spread"></div>
-          <img src={userData.avatar} alt="User Avatar" className="relative w-full h-full rounded-full shadow-lg border-4 border-white" />
-        </div>
-        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-2">{userData.name}</h2>
-        <p className="text-gray-700 text-center mb-4 italic">{userData.bio}</p>
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <p className="font-semibold text-gray-600">Name:</p>
-            <p className="text-gray-800">{userData.name}</p>
-          </div>
-          <div>
-            <p className="font-semibold text-gray-600">Email:</p>
-            <p className="text-gray-800">{userData.email}</p>
-          </div>
-          <div>
-            <p className="font-semibold text-gray-600">Phone Number:</p>
-            <p className="text-gray-800">{userData.phoneNumber}</p>
-          </div>
-          <div>
-            <p className="font-semibold text-gray-600">Date of Birth:</p>
-            <p className="text-gray-800">{userData.dateOfBirth}</p>
-          </div>
-          <div>
-            <p className="font-semibold text-gray-600">Age:</p>
-            <p className="text-gray-800">{userData.age}</p>
-          </div>
-          <div>
-            <p className="font-semibold text-gray-600">Password:</p>
-            <div className="flex items-center">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={userData.password}
-                readOnly
-                className="border rounded px-2 py-1 w-full bg-gray-100"
-              />
-              <button
-                type="button"
-                className="ml-2 text-blue-500 hover:text-blue-700"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
+    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl mt-10">
+      {userDetails && (
+        <Transition in={true} timeout={300} mountOnEnter unmountOnExit>
+          {state => (
+            <div className={`transition-opacity duration-300 ${state === 'entered' ? 'opacity-100' : 'opacity-0'}`}>
+              <div className="md:flex">
+                <div className="md:flex-shrink-0">
+                  <img className="h-48 w-full object-cover md:w-48" src={userDetails.AvatarUrl} alt="User avatar" />
+                </div>
+                <div className="p-8">
+                  <h1 className="block mt-1 text-lg leading-tight font-medium text-black">User Profile</h1>
+                  <p className="mt-2 text-gray-500"><strong>Name:</strong> {userDetails.UserName}</p>
+                  <p className="mt-2 text-gray-500"><strong>Email:</strong> {userDetails.Email}</p>
+                  <p className="mt-2 text-gray-500"><strong>Number:</strong> {userDetails.Mobile}</p>
+                  {/* <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleLogin}>Login</button> */}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="mt-8 text-center">
-          <Link to="/" className="text-blue-500 hover:text-blue-700 hover:underline">
-            Back to Home
-          </Link>
-        </div>
-      </div>
+          )}
+        </Transition>
+      )}
+      <ToastContainer />
+      {modalOpen && <Login modalOpen={modalOpen} setModalOpen={setModalOpen} onClose={closeLoginModal} />}
     </div>
   );
 };

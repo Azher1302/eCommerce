@@ -71,6 +71,7 @@ function DashboardProducts() {
         console.error('Error:', error);
         toast.error(`Failed to save row with ID ${row.Id}`);
       }
+      window.location.reload();
     }
 
     // Update the state with the successfully saved rows

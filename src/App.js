@@ -52,6 +52,8 @@ import ProductModal1 from './components/Modals/ProductModal1';
 import LoginModal from './components/Drawer/LoginModal';
 import Categories from './components/Home/Categories';
 import CategoriesShop from './components/Home/Categories';
+import Account from './layout/navbar/Account';
+import SearchBar from './SearchBar';
 
 
 
@@ -102,9 +104,11 @@ function App() {
           <Route path='/MobileNavebar' element={<MobileNavebar />} />
           <Route path="/Categories" element={<Categories />} />
           <Route path="/CategoriesShop" element={<CategoriesShop />} />
+          <Route path="/Account" element={<Account />} />
+          <Route path="/SearchBar" element={<SearchBar />} />
 
 
-  
+          
 
 
 

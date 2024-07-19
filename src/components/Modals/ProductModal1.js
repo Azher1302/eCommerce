@@ -26,6 +26,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
       title: product.ItemName,
       price: product.flashSale ? product.flashSalePrice : product.Rate,
       quantity: quantity,
+      GST: product.GST,
       image: product.ItemImage, // Ensure this is the correct field for the image URL
       flashSale: product.flashSale,
       flashSalePrice: product.flashSalePrice,
@@ -111,7 +112,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
                   onClick={handleAddToCart}
                 >
                   <FaCartShopping className="mr-2" />
-                  Add to Cart
+                
                 </button>
               </div>
               <div className="flex text-sm">
@@ -129,11 +130,12 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
                 ))}
               </div>
               <div>
-                <p className="text-sm leading-6 text-gray-500 md:leading-6">ID: {product.Id}</p>
+                <p className="text-sm leading-6 text-gray-500 md:leading-6">GST: {product.GST}</p>
                 <p className="text-sm leading-6 text-gray-500 md:leading-6">Item Type: {product.ItemType}</p>
               </div>
             </div>
           </div>
+          
         </div>
       </Transition>
     </MainModal>

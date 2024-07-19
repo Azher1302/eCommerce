@@ -3,16 +3,17 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { GoEye } from 'react-icons/go';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { FaSpinner } from 'react-icons/fa';
+import { BaseUrl } from '../Config/config';
 
 function Table() {
-  const [CartItems, setCartItems] = useState([]);
+  const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deletedCount, setDeletedCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCartItems = JSON.parse(localStorage.getItem('CartItems')) || [];
-    setCartItems(storedCartItems);
+    const storedOrderData = JSON.parse(localStorage.getItem('orderData')) || {};
+    setOrderData(storedOrderData);
 
     const storedDeletedCount = parseInt(localStorage.getItem('deletedCount'), 10) || 0;
     setDeletedCount(storedDeletedCount);
@@ -24,41 +25,67 @@ function Table() {
   const Text = 'px-5 text-sm py-3 leading-6 text-gray-700 whitespace-nowrap';
   const Image = 'w-12 h-12 object-cover rounded';
 
-  const Rows = ({ item }) => (
-    <tr key={item.id} className="hover:bg-gray-100 transition duration-150">
-      <td className={`${Text} font-medium`}>{item.id}</td>
-      <td className={`${Text} text-center`}>
-        <img src={item.image} alt={item.title} className={Image} />
-      </td>
-      <td className={`${Text} text-center`}>{item.title}</td>
-      <td className={`${Text} text-center`}>${item.price.toFixed(2)}</td>
-      <td className={`${Text} text-center`}>{item.quantity}</td>
-      <td className={`${Text} text-center`}>${(item.price * item.quantity).toFixed(2)}</td>
-      <td className={`${Text} text-center flex justify-center gap-2`}>
-        <button
-          className="border border-red-500 text-red-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-150"
-          onClick={() => handleDelete(item.id)}
-        >
-          <RiDeleteBinLine />
-        </button>
-        <Link
-          to={`/product/${item.id}`}
-          className="border border-blue-500 text-blue-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-500 hover:text-white transition duration-150"
-        >
-          <GoEye />
-        </Link>
-      </td>
-    </tr>
-  );
+  const Rows = ({ item }) => {
+    const [showDelete, setShowDelete] = useState(true);
 
-  const handleDelete = (id) => {
-    const updatedCartItems = CartItems.filter(item => item.id !== id);
-    setCartItems(updatedCartItems);
-    localStorage.setItem('CartItems', JSON.stringify(updatedCartItems));
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        const now = new Date().getTime();
+        const itemTime = new Date(item.addedAt).getTime();
+        const timeDiff = now - itemTime;
+        const fiveMinutes = 5 * 60 * 1000;
 
-    const newDeletedCount = deletedCount + 1;
-    setDeletedCount(newDeletedCount);
-    localStorage.setItem('deletedCount', newDeletedCount);
+        if (timeDiff >= fiveMinutes) {
+          setShowDelete(false);
+        }
+      }, 1000); // Check every second for time difference update
+
+      return () => clearTimeout(timer);
+    }, [item.addedAt]);
+
+    const handleDelete = (id) => {
+      const updatedCartItems = orderData.cartItems.filter((item) => item.id !== id);
+      const updatedOrderData = { ...orderData, cartItems: updatedCartItems };
+      setOrderData(updatedOrderData);
+      localStorage.setItem('orderData', JSON.stringify(updatedOrderData));
+
+      const newDeletedCount = deletedCount + 1;
+      setDeletedCount(newDeletedCount);
+      localStorage.setItem('deletedCount', newDeletedCount);
+    };
+
+    return (
+      <tr key={item.id} className="hover:bg-gray-100 transition duration-150">
+        <td className={`${Text} font-medium`}>{item.id}</td>
+        <td className={`${Text} text-center`}>
+          <img
+            src={BaseUrl + `api/Master/LoadItemImage?ImageName=${item.image}`}
+            alt={item.title}
+            className={Image}
+          />
+        </td>
+        <td className={`${Text} text-center`}>{item.title}</td>
+        <td className={`${Text} text-center`}>${item.price.toFixed(2)}</td>
+        <td className={`${Text} text-center`}>{item.quantity}</td>
+        <td className={`${Text} text-center`}>${(item.price * item.quantity).toFixed(2)}</td>
+        <td className={`${Text} text-center flex justify-center gap-2`}>
+          {showDelete && (
+            <button
+              className="border border-red-500 text-red-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-150"
+              onClick={() => handleDelete(item.id)}
+            >
+              <RiDeleteBinLine />
+            </button>
+          )}
+          <Link
+            to={`/product/${item.id}`}
+            className="border border-blue-500 text-blue-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-500 hover:text-white transition duration-150"
+          >
+            <GoEye />
+          </Link>
+        </td>
+      </tr>
+    );
   };
 
   if (loading) {
@@ -68,10 +95,21 @@ function Table() {
       </div>
     );
   }
+  const getNavLinkClass = ({ isActive }) => (isActive ? 'text-main' : 'hover:text-main');
 
-  if (CartItems.length === 0) {
-    navigate('/shop');
-    return null; // Return null to prevent rendering anything else
+
+  if (!orderData || orderData.cartItems.length === 0) {
+    return (
+      <div className="text-center text-xl font-medium mt-8">
+        You haven't placed any orders yet.<br />
+        <button className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105">
+          <NavLink className="no-underline text-white" to='/shop'>Shop</NavLink>
+        </button>
+      </div>
+    );
+  
+   
+    
   }
 
   return (
@@ -92,7 +130,7 @@ function Table() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {CartItems.map((item) => (
+              {orderData.cartItems.map((item) => (
                 <Rows key={item.id} item={item} />
               ))}
             </tbody>
