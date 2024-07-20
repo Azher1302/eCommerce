@@ -5,26 +5,71 @@ import { FaRupeeSign } from 'react-icons/fa'; // Import the rupee icon
 import ProductModal from './Modals/ProductModal';
 import { Transition } from '@headlessui/react';
 import { BaseUrl } from '../Config/config';
+import { toast } from 'react-toastify';
 
 function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [product, setProduct] = useState(null);
   const [items, setItems] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem('token')); // Retrieve the token from local storage
 
   useEffect(() => {
-    const storedItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    setItems(storedItems);
-  }, []);
+    // Fetch items from the API
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(`${BaseUrl}api/User/GetUserCart`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch items');
+        }
+
+        const data = await response.json();
+        const updatedData = data.map((item, index) => ({ ...item, SequentialId: index + 1 }));
+        setItems(updatedData);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+        toast.error('Failed to fetch items');
+      }
+    };
+
+    fetchItems();
+  }, [token]);
 
   const updateLocalStorage = (updatedItems) => {
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
   };
 
-  const handleDelete = (index) => {
-    const updatedItems = [...items];
-    updatedItems.splice(index, 1);
-    setItems(updatedItems);
-    updateLocalStorage(updatedItems);
+  const handleDelete = async (index) => {
+    const item = items[index];
+    try {
+      const response = await fetch(`${BaseUrl}api/User/RemoveItemFromCart?Id=${item.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const updatedItems = [...items];
+        updatedItems.splice(index, 1);
+        setItems(updatedItems);
+        updateLocalStorage(updatedItems);
+        toast.success('Item removed from cart successfully');
+        closeCartDrawer();
+      } else {
+        toast.error('Failed to remove item from cart');
+      }
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+      toast.error('Failed to remove item from cart');
+    }
   };
 
   const handleAddToCart = (product) => {
@@ -45,12 +90,12 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
     updateLocalStorage(updatedItems);
   };
 
-  const subtotal = items.length ? items.reduce((total, item) => total + item.price * item.quantity, 0) : 0;
-  const totalGST = items.length ? items.reduce((total, item) => total + (item.GST * item.price * item.quantity / 100), 0) : 0;
+  const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalGST = items.reduce((total, item) => total + (item.GST * item.price * item.quantity / 100), 0);
 
   const shipping = 45;
   const discount = 23;
-  const total = items.length ? subtotal + totalGST + shipping - discount : 0;
+  const total = subtotal + totalGST + shipping - discount;
 
   return (
     <>
@@ -69,32 +114,36 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
             <div key={i} className="grid grid-cols-8 gap-2 my-6 items-center">
               <div className="col-span-2 bg-deepGray rounded p-2 h-24">
                 <img
-                  alt={p.title}
-                  src={ BaseUrl + `api/Master/LoadItemImage?ImageName=${p.image}`}
+                  alt={p.ItemName}
+                  src={p.ItemImage ? `${BaseUrl}api/Master/LoadItemImage?ImageName=${p.ItemImage}` : '/default-image.png'}
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="col-span-4 flex flex-col text-sm gap-2">
-                <h3 className="font-medium truncate">{p.title}</h3>
+                <h3 className="font-medium truncate">{p.ItemName}</h3>
                 <div className="flex items-center">
                   <h2 className="font-bold flex items-center">
-                    <FaRupeeSign /> <span className="ml-1">{p.price}</span>
+                    <FaRupeeSign /> <span className="ml-1">{p.Amount}</span>
                   </h2>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button
+                  {/* <button
                     onClick={() => handleQuantityChange(i, -1)}
                     className="bg-gray-200 px-2 rounded"
                   >
                     -
-                  </button>
-                  <span>Quantity: {p.quantity}</span>
-                  <button
+                  </button> */}
+                  {/* <span>Quantity: {p.Quantity}</span> */}
+                  {/* <button
                     onClick={() => handleQuantityChange(i, 1)}
                     className="bg-gray-200 px-2 rounded"
                   >
                     +
-                  </button>
+                  </button> */}
+                </div>
+                <div className="flex items-center">
+                  <span className="text-gray-600">GST:</span>
+                  <span className="ml-1">{p.GST}%</span>
                 </div>
               </div>
               <div className="col-span-1 flex-col">
@@ -124,7 +173,7 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
         )}
       </div>
 
-      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
+      {/* <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Subtotal
         <span className="text-gray-800 font-bold flex items-center">
           <FaRupeeSign /> {subtotal.toFixed(2)}
@@ -136,30 +185,25 @@ function OrderSummary({ order, cartDrawerOpen, closeCartDrawer }) {
           <FaRupeeSign /> {totalGST.toFixed(2)}
         </span>
       </div>
-      {/* <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
+      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Shipping
         <span className="text-gray-800 font-bold flex items-center">
           <FaRupeeSign /> {shipping.toFixed(2)}
         </span>
-      </div> */}
-      {/* <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
+      </div>
+      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
         Discount
         <span className="text-gray-800 font-bold flex items-center">
-          <FaRupeeSign /> {discount.toFixed(2)}
+          -<FaRupeeSign /> {discount.toFixed(2)}
         </span>
       </div> */}
-      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500">
-        Total
-        <span className="text-gray-800 font-bold flex items-center">
-          <FaRupeeSign /> {total.toFixed(2)}
-        </span>
-      </div>
-      <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500 mt-4">
-        <span className="align-middle font-medium">Total Payment</span>
-        <span className="rounded-md font-bold py-2 px-3 bg-white text-subMain flex items-center">
-          <FaRupeeSign /> {total.toFixed(2)}
-        </span>
-      </div>
+     <div className="flex items-center justify-between text-sm w-full font-semibold text-gray-500 mt-4">
+  Total Payment
+  <span className="rounded-md font-bold py-2 px-3 bg-white text-subMain flex items-end">
+    <FaRupeeSign className="mr-0" /> {items.reduce((total, item) => total + (item.Amount || 0) * (item.Quantity || 0), 0)}
+  </span>
+</div>
+
     </>
   );
 }

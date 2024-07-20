@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FaSearch, FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
+import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Login from '../../components/Modals/Login';
@@ -115,6 +115,8 @@ const Navbar = () => {
           <Link to="/">
             <img src="/images/initlogo1.png" alt="logo" className="w-24 object-contain" />
           </Link>
+          
+
           <div className="flex items-center gap-4 lg:hidden">
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-xl transitions scale-hover">
               {mobileMenuOpen ? <FaTimes /> : <FaBars />}
@@ -128,19 +130,15 @@ const Navbar = () => {
               )}
             </button>
           </div>
-          <div className="hidden lg:flex gap-6 items-center w-full">
-            <form onSubmit={handleSearchSubmit} className="w-1/2 bg-dryGray rounded flex gap-4 justify-between transitions">
-              
-            </form>
+          <div className="hidden lg:flex gap-6 items-center w-full  justify-end">
             <div className="flex gap-6 items-center">
-             
               <NavLink className={getNavLinkClass} to="/shop">
-                shop
+                Shop
               </NavLink>
               <NavLink to="/about-us" className={getNavLinkClass}>
                 About
               </NavLink>
-              <NavLink to="/c" className={getNavLinkClass}>
+              <NavLink to="/contact-us" className={getNavLinkClass}>
                 Contact
               </NavLink>
               {!isLoggedIn ? (

@@ -18,36 +18,44 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
     setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     toast.success("Added to cart");
+    const id = 0+1;
 
-    const newCartItem = {
-      id: product.Id,
-      title: product.ItemName,
-      price: product.flashSale ? product.flashSalePrice : product.Rate,
-      quantity: quantity,
-      GST: product.GST,
-      image: product.ItemImage, // Ensure this is the correct field for the image URL
-      flashSale: product.flashSale,
-      flashSalePrice: product.flashSalePrice,
-      flashSaleStartDate: product.flashSaleStartDate,
-      flashSaleEndDate: product.flashSaleEndDate,
+    const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
+    const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
+
+    const requestBody = {
+      id: 0,
+      ItemId: product.Id, // Ensure this is the correct item ID
+      Quantity: quantity,
+      // ItemImage: product.ItemImage,
+      // UserId: userId // Uncomment if UserId is required
     };
 
-    let existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    try {
+      const response = await fetch(BaseUrl + 'api/User/AddorRemoveFromCart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-    const existingItemIndex = existingCartItems.findIndex(item => item.id === newCartItem.id);
-
-    if (existingItemIndex !== -1) {
-      existingCartItems[existingItemIndex].quantity += quantity;
-    } else {
-      existingCartItems.push(newCartItem);
+      if (response.ok) {
+        const result = await response.json();
+        console.log('API Response:', result);
+        toast.success('Item added to cart successfully');
+        // window.location.reload();
+        setModalOpen(false); // Optionally close modal after adding to cart
+      } else {
+        toast.error('Failed to add item to cart');
+      }
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      toast.error('Failed to add item to cart');
     }
-    
-    localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
-    setModalOpen(false); // Optionally close modal after adding to cart
-    // Avoid page reload; instead, update UI or state
-    window.location.reload();
   };
 
   if (!product) return null;
@@ -59,7 +67,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
           <div className="grid bg-white lg:grid-cols-2 gap-2 overflow-hidden shadow-xl rounded-2xl">
             <div className="p-4 md:h-96 h-72">
               <img
-                src={ BaseUrl + `api/Master/LoadItemImage?ImageName=${product.ItemImage}`} // Ensure BaseUrl is defined correctly
+                src={BaseUrl + `api/Master/LoadItemImage?ImageName=${product.ItemImage}`} // Ensure BaseUrl is defined correctly
                 className="w-full h-full object-contain"
                 alt={product.ItemName}
                 // onError={(e) => e.target.src = '/images/placeholder.png'} // Handle image load error
@@ -112,7 +120,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
                   onClick={handleAddToCart}
                 >
                   <FaCartShopping className="mr-2" />
-                
+                  Add to Cart
                 </button>
               </div>
               <div className="flex text-sm">
@@ -135,7 +143,6 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
               </div>
             </div>
           </div>
-          
         </div>
       </Transition>
     </MainModal>

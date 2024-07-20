@@ -4,9 +4,9 @@ import { FiPlus, FiMinus } from 'react-icons/fi';
 import { BaseUrl } from '../../Config/config';
 import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { FaRupeeSign } from 'react-icons/fa';
 import MainDrawer from './MainDrawer';
-import toast, { Toaster } from 'react-hot-toast'; // Import Toaster from react-hot-toast
-// import './Cart.css'; // Custom CSS for toast styling
+import toast, { Toaster } from 'react-hot-toast';
 
 function Cart({ cartDrawerOpen, closeCartDrawer }) {
   const [items, setItems] = useState([]);
@@ -14,65 +14,136 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    setItems(storedItems);
-    updateTotalQuantity(storedItems);
+    const fetchCartItems = async () => {
+      const token = localStorage.getItem('token');
 
-    // Listen for changes in local storage
-    const handleStorageChange = () => {
-      const updatedItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-      setItems(updatedItems);
-      updateTotalQuantity(updatedItems);
+      if (!token) {
+        toast.error('You are not logged in!');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BaseUrl}api/User/GetUserCart`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch items');
+        }
+
+        const data = await response.json();
+        const updatedData = data.map((item, index) => ({ ...item, SequentialId: index + 1 }));
+        setItems(updatedData);
+        updateTotalQuantity(updatedData);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+        toast.error('Failed to fetch items');
+      }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
+    fetchCartItems();
   }, []);
 
-  const updateLocalStorage = (updatedItems) => {
-    localStorage.setItem('cartItems', JSON.stringify(updatedItems));
-  };
-
   const updateTotalQuantity = (items) => {
-    const total = items.reduce((sum, item) => sum + item.quantity, 0);
+    const total = items.reduce((sum, item) => sum + (item.Quantity || 0), 0);
     setTotalQuantity(total);
   };
 
-  const handleIncrement = (index) => {
+  const handleIncrement = async (index) => {
     const updatedItems = [...items];
-    updatedItems[index].quantity += 1;
-    setItems(updatedItems);
-    updateLocalStorage(updatedItems);
-    updateTotalQuantity(updatedItems);
-  };
-
-  const handleDecrement = (index) => {
-    const updatedItems = [...items];
-    if (updatedItems[index].quantity > 1) {
-      updatedItems[index].quantity -= 1;
-      setItems(updatedItems);
-      updateLocalStorage(updatedItems);
-      updateTotalQuantity(updatedItems);
+    if (updatedItems[index]) {
+      const newQuantity = updatedItems[index].Quantity + 1;
+      const success = await updateItemQuantity(updatedItems[index].id, newQuantity);
+      if (success) {
+        updatedItems[index].Quantity = newQuantity;
+        setItems(updatedItems);
+        updateTotalQuantity(updatedItems);
+      }
     }
   };
 
-  const handleDelete = (index) => {
+  const handleDecrement = async (index) => {
     const updatedItems = [...items];
-    updatedItems.splice(index, 1);
-    setItems(updatedItems);
-    updateLocalStorage(updatedItems);
-    updateTotalQuantity(updatedItems);
-    closeCartDrawer(); // Close the cart drawer after deleting an item
+    if (updatedItems[index] && updatedItems[index].Quantity > 1) {
+      const newQuantity = updatedItems[index].Quantity - 1;
+      const success = await updateItemQuantity(updatedItems[index].id, newQuantity);
+      if (success) {
+        updatedItems[index].Quantity = newQuantity;
+        setItems(updatedItems);
+        updateTotalQuantity(updatedItems);
+      }
+    }
+  };
+
+  const updateItemQuantity = async (id, quantity) => {
+    const token = localStorage.getItem('token');
+
+    try {
+      const response = await fetch(`${BaseUrl}api/User/AddorRemoveFromCart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ Id: id, Quantity: quantity }),
+      });
+
+      if (response.ok) {
+        return true;
+      } else {
+        toast.error('Failed to update item quantity');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
+      toast.error('Failed to update item quantity');
+      return false;
+    }
+  };
+
+  const handleDelete = async (index) => {
+    const token = localStorage.getItem('token');
+    const item = items[index];
+
+    if (!item || !token) {
+      toast.error('Failed to remove item from cart');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BaseUrl}api/User/RemoveItemFromCart?Id=${item.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const updatedItems = [...items];
+        updatedItems.splice(index, 1);
+        setItems(updatedItems);
+        updateTotalQuantity(updatedItems);
+        toast.success('Item removed from cart successfully');
+        closeCartDrawer();
+      } else {
+        toast.error('Failed to remove item from cart');
+      }
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+      toast.error('Failed to remove item from cart');
+    }
   };
 
   const handleProceedToCheckout = () => {
-    closeCartDrawer(); // Close the cart drawer before showing any alert
+    closeCartDrawer();
 
     if (items.length === 0) {
-      toast.error('No product is this category');
+      toast.error('No product in this category');
       return;
     }
 
@@ -105,45 +176,52 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
           </div>
 
           <div className="overflow-y-scroll flex-grow scrollbar-hide w-full max-h-full">
-            {items.map((item, index) => (
-              <div key={index} className="grid grid-cols-8 gap-2 my-6 items-center">
-                <div className="col-span-2 bg-deepGray rounded p-2 h-24">
-                  <img
-                    alt={item.title}
-                    src={BaseUrl + `api/Master/LoadItemImage?ImageName=${item.image}`}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="col-span-5 flex flex-col text-sm gap-2">
-                  <h3 className="font-medium truncate">{item.title}</h3>
-                  {item.price}
-                  <div className="grid grid-cols-3 text-xs gap-1 border border-main w-32">
+            {items.length > 0 ? (
+              items.map((item, index) => (
+                <div key={index} className="grid grid-cols-8 gap-2 my-6 items-center">
+                  <div className="col-span-2 bg-deepGray rounded p-2 h-24">
+                    <img
+                      alt={item.ItemName}
+                      src={item.ItemImage ? `${BaseUrl}api/Master/LoadItemImage?ImageName=${item.ItemImage}` : '/default-image.png'}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="col-span-5 flex flex-col text-sm gap-2">
+                    <h3 className="font-medium truncate">{item.ItemName}</h3>
+                    <h2 className="font-bold flex items-center">
+                      <FaRupeeSign /> <span className="ml-1">{item.Amount}</span>
+                    </h2>
+                    <p>{item.ItemDescription}</p>
+                    <div className="grid grid-cols-3 text-xs gap-1 border border-main w-32">
+                      <button
+                        onClick={() => handleDecrement(index)}
+                        disabled={item.Quantity === 1}
+                        className="flex-colo py-1 hover:bg-main hover:text-white"
+                      >
+                        <FiMinus />
+                      </button>
+                      <p className="flex-colo py-1">{item.Quantity}</p>
+                      <button
+                        onClick={() => handleIncrement(index)}
+                        className="flex-colo py-1 hover:bg-main hover:text-white"
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-span-1 flex-colo">
                     <button
-                      onClick={() => handleDecrement(index)}
-                      disabled={item.quantity === 1}
-                      className="flex-colo py-1 hover:bg-main hover:text-white"
+                      onClick={() => handleDelete(index)}
+                      className="flex-colo p-2 text-lg bg-flash rounded text-white hover:bg-main hover:text-white"
                     >
-                      <FiMinus />
-                    </button>
-                    <p className="flex-colo py-1">{item.quantity}</p>
-                    <button
-                      onClick={() => handleIncrement(index)}
-                      className="flex-colo py-1 hover:bg-main hover:text-white"
-                    >
-                      <FiPlus />
+                      <MdDelete />
                     </button>
                   </div>
                 </div>
-                <div className="col-span-1 flex-colo">
-                  <button
-                    onClick={() => handleDelete(index)}
-                    className="flex-colo p-2 text-lg bg-flash rounded text-white hover:bg-main hover:text-white"
-                  >
-                    <MdDelete />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-center my-4">No items in the cart</p>
+            )}
           </div>
 
           <button
@@ -152,12 +230,12 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
           >
             <span className="align-middle font-medium">Proceed To Checkout</span>
             <span className="rounded-md font-bold py-2 px-3 bg-white text-subMain">
-              ${items.reduce((total, item) => total + item.price * item.quantity, 0)}
+              <FaRupeeSign /> {items.reduce((total, item) => total + (item.Amount || 0) * (item.Quantity || 0), 0)}
             </span>
           </button>
         </div>
       </MainDrawer>
-      <Toaster position="top-center" reverseOrder={false} /> {/* Configure toast position */}
+      <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 }

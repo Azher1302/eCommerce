@@ -54,6 +54,7 @@ import Categories from './components/Home/Categories';
 import CategoriesShop from './components/Home/Categories';
 import Account from './layout/navbar/Account';
 import SearchBar from './SearchBar';
+import PopularProduct from './components/Home/PopularProduct';
 
 
 
@@ -106,6 +107,7 @@ function App() {
           <Route path="/CategoriesShop" element={<CategoriesShop />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/SearchBar" element={<SearchBar />} />
+          <Route path="/PopularProduct" element={<PopularProduct />} />
 
 
           

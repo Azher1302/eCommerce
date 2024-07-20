@@ -520,7 +520,9 @@ function AllProductShow() {
               >
                 <option value="">Select Item Type</option>
                 {itemTypes.map(type => (
-                  <option key={type.Id} value={type.Id}>{type.TypeName}</option>
+                  <option key={type.Id} value={type.Id}>{type.ItemType},
+                  {type.Id}
+                  </option>
                 ))}
               </select>
             </label>

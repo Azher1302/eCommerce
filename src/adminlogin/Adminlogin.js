@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaRegUser, FaLock } from "react-icons/fa";
 import { BaseUrl } from '../Config/config';
 import Cookies from 'universal-cookie';
+import { toast } from 'react-toastify';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -37,14 +38,14 @@ const AdminLogin = () => {
       setToken(token); // Set the token state
 
       // Display alert here before navigating
-      window.alert('Admin logged in successfully!');
+      toast.success('Admin logged in successfully!');
 
       // Wait for a short time to allow the user to see the alert before navigating
       setTimeout(() => {
         navigate('/AdminDashboard');
       }, 200); // Adjust the time as needed
     } catch (err) {
-      window.alert('Login failed. Please try again.');
+      toast.error('Login failed. Please try again.');
     }
   };
 
