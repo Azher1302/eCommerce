@@ -221,7 +221,7 @@ function AllItemShow() {
               <th className="bg-gray-700 rounded px-4 py-2">NO</th>
               <th className="bg-gray-700 rounded px-4 py-2">ID</th>
               <th className="bg-gray-700 rounded px-4 py-2">Item Type</th>
-              <th className="bg-gray-700 rounded px-4 py-2">HSN Code</th>
+              {/* <th className="bg-gray-700 rounded px-4 py-2">HSN Code</th> */}
               {/* <th className="bg-gray-700 rounded px-4 py-2">GST</th> */}
               <th className="bg-gray-700 rounded px-4 py-2">Code</th>
               <th className="bg-gray-700 rounded px-4 py-2">Enable/Disable</th>
@@ -234,7 +234,7 @@ function AllItemShow() {
                 <td className="border border-gray-300 py-2 px-4">{item.SequentialId}</td>
                 <td className="border border-gray-300 py-2 px-4">{item.Id}</td>
                 <td className="border border-gray-300 py-2 px-4">{item.ItemType}</td>
-                <td className="border border-gray-300 py-2 px-4">{item.HSNCode}</td>
+                {/* <td className="border border-gray-300 py-2 px-4">{item.HSNCode}</td> */}
                 {/* <td className="border border-gray-300 py-2 px-4">{item.GST}</td> */}
                 <td className="border border-gray-300 py-2 px-4">{item.Code}</td>
                 <td className="border border-gray-300 py-2 px-4 text-center">
@@ -271,7 +271,7 @@ function AllItemShow() {
               className="border px-4 py-2 w-full"
             />
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block mb-2">HSN Code</label>
             <input
               type="text"
@@ -280,7 +280,7 @@ function AllItemShow() {
               onChange={handleChange}
               className="border px-4 py-2 w-full"
             />
-          </div>
+          </div> */}
           {/* <div className="mb-4">
             <label className="block mb-2">GST</label>
             <input

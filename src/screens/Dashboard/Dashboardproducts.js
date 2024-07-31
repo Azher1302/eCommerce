@@ -84,7 +84,7 @@ function DashboardProducts() {
     const newRow = {
       Id: newRowId,
       ItemType: newRowItemType,
-      HSNCode: newRowHSNCode,
+      HSNCode: 0,
       GST: 0,
       Code: newRowCode,
     };
@@ -122,7 +122,7 @@ function DashboardProducts() {
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
           />
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <input
             type="text"
             placeholder="HSN Code"
@@ -130,7 +130,7 @@ function DashboardProducts() {
             onChange={e => setNewRowHSNCode(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
           />
-        </div>
+        </div> */}
         {/* <div className="mb-4">
           <input
             type="text"
@@ -161,7 +161,7 @@ function DashboardProducts() {
           <tr className="bg-gray-600 text-white">
             <th className="px-4 py-2">ID</th>
             <th className="px-4 py-2">ItemType</th>
-            <th className="px-4 py-2">HSNCode</th>
+            {/* <th className="px-4 py-2">HSNCode</th> */}
             {/* <th className="px-4 py-2">GST</th> */}
             <th className="px-4 py-2">Code</th>
             <th className="px-4 py-2">Action</th>

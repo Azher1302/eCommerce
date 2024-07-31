@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
-import MainModal from './MainModal';
-import { FiPlus, FiMinus } from 'react-icons/fi';
-import { FaRupeeSign } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { Dialog } from '@headlessui/react';
+import toast from 'react-hot-toast';
 import { BaseUrl } from '../../Config/config';
-import { Transition } from '@headlessui/react';
-import Login from './Login';
+import { FaRupeeSign, FaShoppingCart } from 'react-icons/fa'; // Import cart icon
+import ProductModal1 from '../Modals/ProductModal1'; // Ensure this path is correct
 
-const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
-  const [quantity, setQuantity] = useState(1);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
+const CategoryProductsModal = ({ modalOpen, onClose, products, addToCart }) => {
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false); // Added state for login modal
+  const [quantity, setQuantity] = useState(1); // Add state for quantity
 
-  const handleIncrement = () => {
-    setQuantity(prevQuantity => prevQuantity + 1);
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+    setProductModalOpen(true);
   };
 
-  const handleDecrement = () => {
-    setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1));
+  const handleCloseProductModal = () => {
+    setSelectedProduct(null);
+    setProductModalOpen(false);
   };
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (product) => {
+    console.log('start');
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -35,6 +38,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
     };
 
     try {
+      console.log("heck first");
       const response = await fetch(BaseUrl + 'api/User/AddorRemoveFromCart', {
         method: 'POST',
         headers: {
@@ -48,7 +52,8 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
         const result = await response.json();
         console.log('API Response:', result);
         toast.success('Item added to cart successfully');
-        window.location.reload();
+        console.log('end');
+        // window.location.reload();
 
         // Store product details in local storage individually
         const cartItemKey = `cartItem_${product.Id}`;
@@ -59,6 +64,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
           const existingItemDetails = JSON.parse(existingItem);
           existingItemDetails.Quantity += quantity;
           localStorage.setItem(cartItemKey, JSON.stringify(existingItemDetails));
+          console.log('end');
         } else {
           // Add new item to local storage
           const newItem = {
@@ -76,7 +82,7 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
           localStorage.setItem(cartItemKey, JSON.stringify(newItem));
         }
 
-        setModalOpen(false); // Optionally close modal after adding to cart
+        setProductModalOpen(false); // Optionally close modal after adding to cart
       } else {
         toast.error('Failed to add item to cart');
       }
@@ -86,96 +92,90 @@ const ProductModal1 = ({ modalOpen, setModalOpen, product }) => {
     }
   };
 
-  if (!product) return null;
-
   return (
     <>
-      <MainModal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <Transition show={modalOpen} as={React.Fragment}>
-          <div className="inline-block lg:py-0 py-24 md:w-3/4 w-full overflow-y-auto h-full align-middle transition-all transform">
-            <div className="grid bg-white lg:grid-cols-2 gap-2 overflow-hidden shadow-xl rounded-2xl">
-              <div className="p-4 md:h-96 h-72">
-                <img
-                  src={BaseUrl + `api/Master/LoadItemImage?ImageName=${product.ItemImage}`}
-                  className="w-full h-full object-contain"
-                  alt={product.ItemName}
+      <Dialog open={modalOpen} onClose={onClose} className="relative z-10">
+        <Dialog.Overlay 
+          className="fixed inset-0 bg-black opacity-30"
+          onClick={onClose}
+        />
+
+        <div 
+          className="fixed inset-0 flex items-center justify-center p-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="bg-white rounded-lg shadow-lg max-w-screen-lg w-full mx-auto p-6 relative overflow-hidden">
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
                 />
-              </div>
-              <div className="w-full flex gap-4 flex-col p-5 md:p-8 text-left">
-                <div className="block">
-                  <h1 className="text-heading text-lg md:text-xl lg:text-2xl font-semibold">
-                    {product.ItemName}
-                  </h1>
-                  <p className="text-sm leading-6 text-gray-500 md:leading-6">{product.ItemDescription}</p>
-                </div>
-                <div className="flex items-center">
-                  {product.flashSale ? (
-                    <h2 className="text-xl font-bold flex items-center">
-                      <FaRupeeSign className="mr-1" />
-                      {product.flashSalePrice}
-                      <del className="text-text ml-3 text-sm font-medium flex items-center">
-                        <FaRupeeSign className="mr-1" />
-                        {product.Rate}
-                      </del>
-                    </h2>
-                  ) : (
-                    <div className="flex items-center text-lg font-black">
-                      <FaRupeeSign className="mr-1" />
-                      {product.Rate}
+              </svg>
+            </button>
+            <h2 className="text-2xl font-bold mb-4">Products</h2>
+            <div className="overflow-y-auto h-80"> {/* Adjust height as needed */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                {products.map(product => (
+                  <div
+                    key={product.Id}
+                    onClick={() => handleProductClick(product)}
+                    className="bg-white shadow-lg rounded-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105"
+                  >
+                    <img
+                      src={BaseUrl + `api/Master/LoadItemImage?ImageName=${product.ItemImage}`}
+                      alt={product.ItemName}
+                      className="w-full h-48 object-cover rounded-t-xl"
+                    />
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold text-gray-800">{product.ItemName}</h3>
+                      <div className="flex items-center">
+                        <FaRupeeSign className="text-gray-800" />
+                        <h3 className="text-lg font-semibold text-gray-800 ml-1">{product.Rate}</h3>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-2">{product.ItemDescription}</p>
                     </div>
-                  )}
-                </div>
-                <div className="grid sm:grid-cols-5 gap-3 items-center">
-                  <div className="grid sm:col-span-2 col-span-5 grid-cols-3 gap-1 border border-text rounded-md">
                     <button
-                      onClick={handleDecrement}
-                      disabled={quantity === 1}
-                      className="flex-colo py-4 border-none"
+                      className="group relative w-full flex items-center justify-center py-2 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering handleProductClick
+                        handleAddToCart(product);
+                      }}
                     >
-                      <FiMinus />
-                    </button>
-                    <p className="flex-colo py-4">{quantity}</p>
-                    <button
-                      onClick={handleIncrement}
-                      disabled={product.quantity < quantity}
-                      className="flex-colo py-4 border-none"
-                    >
-                      <FiPlus />
+                      <span className="flex-1">Add to Cart</span>
+                      <FaShoppingCart className="ml-2 h-5 w-5" />
                     </button>
                   </div>
-                  <button
-                    className="group relative w-full flex justify-center py-6 px-3 border border-transparent text-sm font-bold rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
-                    onClick={handleAddToCart}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-                <div className="flex text-sm">
-                  Category:
-                  <span className="text-main font-bold ml-3">{product.ItemType}</span>
-                </div>
-                <div className="flex flex-wrap gap-3 items-center">
-                  {product.tag && product.tag.map((t, i) => (
-                    <div
-                      key={i}
-                      className="py-1 px-3 bg-deepest text-main rounded-full text-xs"
-                    >
-                      {t}
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <p className="text-sm leading-6 text-gray-500 md:leading-6">GST: {product.GST}</p>
-                  <p className="text-sm leading-6 text-gray-500 md:leading-6">Item Type: {product.ItemType}</p>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-        </Transition>
-      </MainModal>
-      <Login modalOpen={loginModalOpen} setModalOpen={setLoginModalOpen} />
+        </div>
+      </Dialog>
+
+      {/* Render ProductModal1 if a product is selected */}
+      {selectedProduct && (
+        <ProductModal1
+          modalOpen={productModalOpen}
+          setModalOpen={setProductModalOpen}
+          product={selectedProduct}
+          onClose={handleCloseProductModal}
+          addToCart={addToCart} // Pass the addToCart function
+        />
+      )}
     </>
   );
 };
 
-export default React.memo(ProductModal1);
+export default CategoryProductsModal;

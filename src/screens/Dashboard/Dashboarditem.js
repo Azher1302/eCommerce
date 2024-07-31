@@ -118,11 +118,11 @@ function DashboardItem() {
       ItemName: '',
       ItemDescription: '',
       GST: '',
-      Cess: '',
+      Cess: 0,
       HSNCode: '',
-      BatchNum: '',
+      BatchNum: 0,
       BarCode: '',
-      CAT_Number: '',
+      CAT_Number: 0,
       ItemCode: '',
       SerialNumber: '',
       ManufactureDate: '',
@@ -147,11 +147,11 @@ function DashboardItem() {
           ItemName: row.ItemName || '',
           ItemDescription: row.ItemDescription || '',
           GST: row.GST || 0,
-          Cess: row.Cess || 0,
+          Cess:  0,
           HSNCode: row.HSNCode || '',
-          BatchNum: row.BatchNum || 0,
+          BatchNum:0,
           BarCode: row.BarCode || '',
-          CAT_Number: row.CAT_Number || '',
+          CAT_Number:  0,
           ItemCode: row.ItemCode || '',
           SerialNumber: row.SerialNumber || '',
           ManufactureDate: row.ManufactureDate || '',
@@ -246,14 +246,14 @@ function DashboardItem() {
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-2"
         />
-        <input
+        {/* <input
           type="number"
           name="Cess"
           placeholder="CESS"
           value={newRow.Cess}
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-2"
-        />
+        /> */}
         <input
           type="text"
           name="HSNCode"
@@ -262,14 +262,14 @@ function DashboardItem() {
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-2"
         />
-        <input
+        {/* <input
           type="number"
           name="BatchNum"
           placeholder="Batch Number"
           value={newRow.BatchNum}
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-2"
-        />
+        /> */}
         <input
           type="text"
           name="BarCode"
@@ -278,14 +278,14 @@ function DashboardItem() {
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-2"
         />
-        <input
+        {/* <input
           type="text"
           name="CAT_Number"
           placeholder="CAT Number"
           value={newRow.CAT_Number}
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded mb-2"
-        />
+        /> */}
         <input
           type="text"
           name="ItemCode"
@@ -376,11 +376,11 @@ function DashboardItem() {
             <th className="p-2 border border-gray-300">Item Name</th>
             <th className="p-2 border border-gray-300">Item Description</th>
             <th className="p-2 border border-gray-300">GST</th>
-            <th className="p-2 border border-gray-300">Cess</th>
+            {/* <th className="p-2 border border-gray-300">Cess</th> */}
             <th className="p-2 border border-gray-300">HSN Code</th>
-            <th className="p-2 border border-gray-300">Batch Number</th>
+            {/* <th className="p-2 border border-gray-300">Batch Number</th> */}
             <th className="p-2 border border-gray-300">Bar Code</th>
-            <th className="p-2 border border-gray-300">CAT Number</th>
+            {/* <th className="p-2 border border-gray-300">CAT Number</th> */}
             <th className="p-2 border border-gray-300">Item Code</th>
             <th className="p-2 border border-gray-300">Serial Number</th>
             <th className="p-2 border border-gray-300">Manufacture Date</th>
@@ -400,11 +400,11 @@ function DashboardItem() {
               <td className="p-2 border border-gray-300">{row.ItemName}</td>
               <td className="p-2 border border-gray-300">{row.ItemDescription}</td>
               <td className="p-2 border border-gray-300">{row.GST}</td>
-              <td className="p-2 border border-gray-300">{row.Cess}</td>
+              {/* <td className="p-2 border border-gray-300">{row.Cess}</td> */}
               <td className="p-2 border border-gray-300">{row.HSNCode}</td>
-              <td className="p-2 border border-gray-300">{row.BatchNum}</td>
+              {/* <td className="p-2 border border-gray-300">{row.BatchNum}</td> */}
               <td className="p-2 border border-gray-300">{row.BarCode}</td>
-              <td className="p-2 border border-gray-300">{row.CAT_Number}</td>
+              {/* <td className="p-2 border border-gray-300">{row.CAT_Number}</td> */}
               <td className="p-2 border border-gray-300">{row.ItemCode}</td>
               <td className="p-2 border border-gray-300">{row.SerialNumber}</td>
               <td className="p-2 border border-gray-300">{row.ManufactureDate}</td>

@@ -37,11 +37,11 @@ function AllProductShow() {
     ItemName: '',
     ItemDescription: '',
     GST: '',
-    Cess: '',
+    Cess: 0,
     HSNCode: '',
-    BatchNum: '',
+    BatchNum: 0,
     BarCode: '',
-    CAT_Number: '',
+    CAT_Number: 0,
     ItemCode: '',
     SerialNumber: '',
     ManufactureDate: '',
@@ -172,11 +172,11 @@ function AllProductShow() {
       ItemName: item.ItemName || '',
       ItemDescription: item.ItemDescription || '',
       GST: item.GST || '',
-      Cess: item.Cess || '',
+      Cess: 0,
       HSNCode: item.HSNCode || '',
-      BatchNum: item.BatchNum || '',
+      BatchNum: 0,
       BarCode: item.BarCode || '',
-      CAT_Number: item.CAT_Number || '',
+      CAT_Number: 0,
       ItemCode: item.ItemCode || '',
       SerialNumber: item.SerialNumber || '',
       ManufactureDate: item.ManufactureDate || '',
@@ -185,7 +185,7 @@ function AllProductShow() {
       Unit: item.Unit || '',
       ItemType: item.ItemType || '',
       WarrantyPeriod: item.WarrantyPeriod || '',
-      model: item.model || '',
+      model: 0,
       imageFile: item.ItemImage || ''
     });
     setSelectedItemType(item.ItemType);
@@ -270,11 +270,11 @@ function AllProductShow() {
       ItemName: '',
       ItemDescription: '',
       GST: '',
-      Cess: '',
+      Cess: 0,
       HSNCode: '',
-      BatchNum: '',
+      BatchNum: 0,
       BarCode: '',
-      CAT_Number: '',
+      CAT_Number: 0,
       ItemCode: '',
       SerialNumber: '',
       ManufactureDate: '',
@@ -283,7 +283,7 @@ function AllProductShow() {
       Unit: '',
       ItemType: '',
       WarrantyPeriod: '',
-      model: '',
+      model: 0,
       imageFile: ''
     });
     setSelectedItemType('');
@@ -306,11 +306,11 @@ function AllProductShow() {
             <th className="px-4 py-2">Item Name</th>
             <th className="px-4 py-2">Item Description</th>
             <th className="px-4 py-2">GST</th>
-            <th className="px-4 py-2">CESS</th>
+            {/* <th className="px-4 py-2">CESS</th> */}
             <th className="px-4 py-2">HSN Code</th>
-            <th className="px-4 py-2">Batch Number</th>
+            {/* <th className="px-4 py-2">Batch Number</th> */}
             <th className="px-4 py-2">Bar Code</th>
-            <th className="px-4 py-2">CAT Number</th>
+            {/* <th className="px-4 py-2">CAT Number</th> */}
             <th className="px-4 py-2">Item Code</th>
             <th className="px-4 py-2">Serial Number</th>
             <th className="px-4 py-2">Manufacture Date</th>
@@ -319,7 +319,7 @@ function AllProductShow() {
             <th className="px-4 py-2">Unit</th>
             <th className="px-4 py-2">Item Type</th>
             <th className="px-4 py-2">Warranty Period</th>
-            <th className="px-4 py-2">Model</th>
+            {/* <th className="px-4 py-2">Model</th> */}
             <th className="px-4 py-2">Image</th>
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Actions</th>
@@ -332,11 +332,11 @@ function AllProductShow() {
               <td className="border px-4 py-2">{item.ItemName}</td>
               <td className="border px-4 py-2">{item.ItemDescription}</td>
               <td className="border px-4 py-2">{item.GST}</td>
-              <td className="border px-4 py-2">{item.Cess}</td>
+              {/* <td className="border px-4 py-2">{item.Cess}</td> */}
               <td className="border px-4 py-2">{item.HSNCode}</td>
-              <td className="border px-4 py-2">{item.BatchNum}</td>
+              {/* <td className="border px-4 py-2">{item.BatchNum}</td> */}
               <td className="border px-4 py-2">{item.BarCode}</td>
-              <td className="border px-4 py-2">{item.CAT_Number}</td>
+              {/* <td className="border px-4 py-2">{item.CAT_Number}</td> */}
               <td className="border px-4 py-2">{item.ItemCode}</td>
               <td className="border px-4 py-2">{item.SerialNumber}</td>
               <td className="border px-4 py-2">{item.ManufactureDate}</td>
@@ -345,7 +345,7 @@ function AllProductShow() {
               <td className="border px-4 py-2">{item.Unit}</td>
               <td className="border px-4 py-2">{item.ItemType}</td>
               <td className="border px-4 py-2">{item.WarrantyPeriod}</td>
-              <td className="border px-4 py-2">{item.model}</td>
+              {/* <td className="border px-4 py-2">{item.model}</td> */}
               <td className="border px-4 py-2">
                 {item.ItemImageUrl && <img src={item.ItemImageUrl} alt="item" className="w-20 h-20 object-cover" />}
               </td>
@@ -555,7 +555,7 @@ function AllProductShow() {
                 className="border border-gray-300 p-2 w-full"
               />
             </label>
-            <label>
+            {/* <label>
               Model:
               <input
                 type="text"
@@ -564,7 +564,7 @@ function AllProductShow() {
                 onChange={handleChange}
                 className="border border-gray-300 p-2 w-full"
               />
-            </label>
+            </label> */}
             <div className="mb-4">
                     <label className="block text-white">Image</label>
                     <input

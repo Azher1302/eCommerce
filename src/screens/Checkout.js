@@ -176,7 +176,7 @@ const Checkout = () => {
       Date: new Date().toISOString().split('T')[0], // Ensure this matches the desired date format
       TaxAmt: taxAmount,
       Cess: 0,
-      AddressId: selectedAddressId, // Use the selected address ID
+      AddressId: 1 && 2 && 3 && 4 && 5 && 6, // Use the selected address ID
       TxnType: 1, // Ensure this matches your API requirement
       PayMode: paymentMethod === 'Card' ? 1 : (paymentMethod === 'Cash' ? 2 : 3), // Correct payment mode
       RoundOff: 0,
