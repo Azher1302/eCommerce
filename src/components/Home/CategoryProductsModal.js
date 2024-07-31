@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import toast from 'react-hot-toast';
 import { BaseUrl } from '../../Config/config';
-import { FaRupeeSign } from 'react-icons/fa';
+import { FaRupeeSign, FaShoppingCart } from 'react-icons/fa'; // Import cart icon
 import ProductModal1 from '../Modals/ProductModal1'; // Ensure this path is correct
 
-const CategoryProductsModal = ({ modalOpen, onClose, products, addToCart }) => {
+const CategoryProductsModal = ({ modalOpen, onClose, products = [], addToCart }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false); // Added state for login modal
@@ -53,7 +53,7 @@ const CategoryProductsModal = ({ modalOpen, onClose, products, addToCart }) => {
         console.log('API Response:', result);
         toast.success('Item added to cart successfully');
         console.log('end');
-        window.location.reload();
+        // window.location.reload();
 
         // Store product details in local storage individually
         const cartItemKey = `cartItem_${product.Id}`;
@@ -127,7 +127,7 @@ const CategoryProductsModal = ({ modalOpen, onClose, products, addToCart }) => {
             <h2 className="text-2xl font-bold mb-4">Products</h2>
             <div className="overflow-y-auto h-80"> {/* Adjust height as needed */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products.map(product => (
+                {products.length > 0 ? products.map(product => (
                   <div
                     key={product.Id}
                     onClick={() => handleProductClick(product)}
@@ -147,16 +147,19 @@ const CategoryProductsModal = ({ modalOpen, onClose, products, addToCart }) => {
                       <p className="text-sm text-gray-600 mt-2">{product.ItemDescription}</p>
                     </div>
                     <button
-                      className="group relative w-full flex justify-center py-6 px-3 border border-transparent text-sm font-bold rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
+                      className="group relative w-full flex items-center justify-center py-2 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent triggering handleProductClick
                         handleAddToCart(product);
                       }}
                     >
-                      Add to Cart
+                      <span className="flex-1">Add to Cart</span>
+                      <FaShoppingCart className="ml-2 h-5 w-5" />
                     </button>
                   </div>
-                ))}
+                )) : (
+                  <p className="text-gray-600">No products available</p>
+                )}
               </div>
             </div>
           </div>
