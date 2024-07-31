@@ -85,7 +85,7 @@ function DashboardProducts() {
       Id: newRowId,
       ItemType: newRowItemType,
       HSNCode: newRowHSNCode,
-      GST: newRowGST,
+      GST: 0,
       Code: newRowCode,
     };
     setTableData([...tableData, newRow]);
@@ -131,7 +131,7 @@ function DashboardProducts() {
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
           />
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <input
             type="text"
             placeholder="GST"
@@ -139,7 +139,7 @@ function DashboardProducts() {
             onChange={e => setNewRowGST(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
           />
-        </div>
+        </div> */}
         <div className="mb-4">
           <input
             type="text"
@@ -162,7 +162,7 @@ function DashboardProducts() {
             <th className="px-4 py-2">ID</th>
             <th className="px-4 py-2">ItemType</th>
             <th className="px-4 py-2">HSNCode</th>
-            <th className="px-4 py-2">GST</th>
+            {/* <th className="px-4 py-2">GST</th> */}
             <th className="px-4 py-2">Code</th>
             <th className="px-4 py-2">Action</th>
           </tr>
@@ -187,14 +187,14 @@ function DashboardProducts() {
                   onChange={e => handleEditRow(row.Id, 'HSNCode', e.target.value)}
                 />
               </td>
-              <td className="border border-gray-300 py-2 px-4">
+              {/* <td className="border border-gray-300 py-2 px-4">
                 <input
                   type="text"
                   className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
                   value={row.GST}
                   onChange={e => handleEditRow(row.Id, 'GST', e.target.value)}
                 />
-              </td>
+              </td> */}
               <td className="border border-gray-300 py-2 px-4">
                 <input
                   type="text"

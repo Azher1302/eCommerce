@@ -55,6 +55,11 @@ import CategoriesShop from './components/Home/Categories';
 import Account from './layout/navbar/Account';
 import SearchBar from './SearchBar';
 import PopularProduct from './components/Home/PopularProduct';
+import Address from './screens/Address';
+import ReportPage from './screens/Dashboard/ReportPage';
+import ModalCheck from './screens/ModalCheck';
+import CategoryProductsModal from './components/Home/CategoryProductsModal';
+import ProductModal2 from './components/Modals/ProductModal2';
 
 
 
@@ -108,6 +113,11 @@ function App() {
           <Route path="/Account" element={<Account />} />
           <Route path="/SearchBar" element={<SearchBar />} />
           <Route path="/PopularProduct" element={<PopularProduct />} />
+          <Route path="/Address" element={<Address />} />
+          <Route path='/ReportPage' element={<ReportPage />} />
+          <Route path='/ModalCheck' element={<ModalCheck />} />
+          <Route path='/CategoryProductsModal' element={<CategoryProductsModal />} />
+          <Route path='/ProductModal2' element={<ProductModal2 />} />
 
 
           

@@ -1,152 +1,134 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { GoEye } from 'react-icons/go';
-import { RiDeleteBinLine } from 'react-icons/ri';
-import { FaSpinner } from 'react-icons/fa';
 import { BaseUrl } from '../Config/config';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { FaRupeeSign } from 'react-icons/fa';
+import dayjs from 'dayjs'; // Import dayjs for date formatting
 
-function Table() {
-  const [orderData, setOrderData] = useState(null);
+const Table = () => {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [deletedCount, setDeletedCount] = useState(0);
+  const [error, setError] = useState(null);
+  const [showTable, setShowTable] = useState(true);
+  const [fetchCount, setFetchCount] = useState(0);
+
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedOrderData = JSON.parse(localStorage.getItem('orderData')) || {};
-    setOrderData(storedOrderData);
-
-    const storedDeletedCount = parseInt(localStorage.getItem('deletedCount'), 10) || 0;
-    setDeletedCount(storedDeletedCount);
-
-    setLoading(false);
-  }, []);
-
-  const Head = 'text-xs font-semibold px-6 py-4 uppercase bg-gray-800 text-white';
-  const Text = 'px-5 text-sm py-3 leading-6 text-gray-700 whitespace-nowrap';
-  const Image = 'w-12 h-12 object-cover rounded';
-
-  const Rows = ({ item }) => {
-    const [showDelete, setShowDelete] = useState(true);
-
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        const now = new Date().getTime();
-        const itemTime = new Date(item.addedAt).getTime();
-        const timeDiff = now - itemTime;
-        const fiveMinutes = 5 * 60 * 1000;
-
-        if (timeDiff >= fiveMinutes) {
-          setShowDelete(false);
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('https://api.onlineshop.initstore.com/api/User/GetCheckOutOrders', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      }, 1000); // Check every second for time difference update
+        const data = await response.json();
+        setOrders(data);
 
-      return () => clearTimeout(timer);
-    }, [item.addedAt]);
+        const currentCount = parseInt(localStorage.getItem('fetchCount') || '0', 10);
+        const newCount = currentCount + 1;
+        localStorage.setItem('fetchCount', newCount.toString());
+        setFetchCount(newCount);
 
-    const handleDelete = (id) => {
-      const updatedCartItems = orderData.cartItems.filter((item) => item.id !== id);
-      const updatedOrderData = { ...orderData, cartItems: updatedCartItems };
-      setOrderData(updatedOrderData);
-      localStorage.setItem('orderData', JSON.stringify(updatedOrderData));
+        const timeoutId = setTimeout(() => {
+          setOrders([]);
+          setShowTable(false);
+        }, 2 * 60 * 1000); // 2 minutes
 
-      const newDeletedCount = deletedCount + 1;
-      setDeletedCount(newDeletedCount);
-      localStorage.setItem('deletedCount', newDeletedCount);
+        return () => clearTimeout(timeoutId);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-      <tr key={item.id} className="hover:bg-gray-100 transition duration-150">
-        <td className={`${Text} font-medium`}>{item.id}</td>
-        <td className={`${Text} text-center`}>
-          <img
-            src={BaseUrl + `api/Master/LoadItemImage?ImageName=${item.image}`}
-            alt={item.title}
-            className={Image}
-          />
-        </td>
-        <td className={`${Text} text-center`}>{item.title}</td>
-        <td className={`${Text} text-center`}>${item.price.toFixed(2)}</td>
-        <td className={`${Text} text-center`}>{item.quantity}</td>
-        <td className={`${Text} text-center`}>${(item.price * item.quantity).toFixed(2)}</td>
-        <td className={`${Text} text-center flex justify-center gap-2`}>
-          {showDelete && (
-            <button
-              className="border border-red-500 text-red-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white transition duration-150"
-              onClick={() => handleDelete(item.id)}
-            >
-              <RiDeleteBinLine />
-            </button>
-          )}
-          <Link
-            to={`/product/${item.id}`}
-            className="border border-blue-500 text-blue-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-500 hover:text-white transition duration-150"
-          >
-            <GoEye />
-          </Link>
-        </td>
-      </tr>
-    );
-  };
+    fetchOrders();
+  }, [token]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <FaSpinner className="animate-spin text-4xl text-main" />
-      </div>
-    );
-  }
-  const getNavLinkClass = ({ isActive }) => (isActive ? 'text-main' : 'hover:text-main');
-
-
-  if (!orderData || orderData.cartItems.length === 0) {
-    return (
-      <div className="text-center text-xl font-medium mt-8">
-        You haven't placed any orders yet.<br />
-        <button className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105">
-          <NavLink className="no-underline text-white" to='/shop'>Shop</NavLink>
-        </button>
-      </div>
-    );
-  
-   
-    
-  }
+  if (loading) return <p className="text-center text-gray-500 text-lg font-semibold">Loading...</p>;
+  if (error) return <p className="text-center text-red-500 text-lg font-semibold">Error: {error.message}</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-100 to-blue-300 p-4 md:p-10">
-      <div className="max-w-6xl mx-auto bg-white p-4 md:p-8 rounded-lg shadow-lg">
-        <h2 className="font-semibold text-2xl mb-6 text-center">My Orders</h2>
-        <div className="w-full overflow-x-auto">
-          <table className="table-auto min-w-full border border-gray-200 divide-y divide-gray-200">
-            <thead>
-              <tr className="bg-gray-800">
-                <th scope="col" className={`${Head} text-left`}>ID</th>
-                <th scope="col" className={`${Head} text-center`}>Image</th>
-                <th scope="col" className={`${Head} text-center`}>Title</th>
-                <th scope="col" className={`${Head} text-center`}>Price</th>
-                <th scope="col" className={`${Head} text-center`}>Quantity</th>
-                <th scope="col" className={`${Head} text-center`}>Total</th>
-                <th scope="col" className={`${Head} text-center`}>Action</th>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Checkout Orders</h2>
+      {showTable ? (
+        orders.length > 0 ? (
+          <div className="overflow-x-auto">
+          <table className="min-w-full bg-white divide-y divide-gray-200 border border-gray-200 rounded-lg shadow-md">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orderData.cartItems.map((item) => (
-                <Rows key={item.id} item={item} />
-              ))}
+              {orders.flatMap((order) =>
+                order.Items.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <img
+                        src={item.ItemImage ? `${BaseUrl}api/Master/LoadItemImage?ItemImage=${item.ItemImage}` : '/default-image.png'}
+                        alt={item.ItemName}
+                        className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                      />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">{item.ItemName}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">{item.Description}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                      {dayjs(order.Date).format('MMM DD, YYYY')} {/* Format date */}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      <FaRupeeSign /> {item.Rate ? item.Rate.toFixed(2) : 'N/A'}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
+          <div className="mt-6 text-center">
+            <NavLink
+              to="/"
+              className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105"
+            >
+              Go to Home
+            </NavLink>
+          </div>
         </div>
-        <div className="mt-4 text-center">
-          <NavLink
-            to="/"
-            className="bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-700 transition duration-150 inline-block"
-          >
-            Go to Home
-          </NavLink>
-        </div>
+        
+        ) : (
+          <p className="text-center text-gray-600 text-lg">No orders available</p>
+        )
+      ) : (
+        <p className="text-center text-gray-600 text-lg">The order details have been cleared.</p>
+      )}
+      <div className="mt-6 text-center">
+        {orders.length === 0 ? (
+          <>
+            <button 
+              onClick={() => navigate('/shop')} 
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out"
+            >
+              View Products
+            </button>
+            <NavLink 
+              to="/" 
+              className="px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300 ease-in-out mt-4 inline-block"
+            >
+              Go to Home
+            </NavLink>
+          </>
+        ) : null}
       </div>
     </div>
   );
-}
+};
 
 export default Table;

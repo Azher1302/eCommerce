@@ -22,11 +22,15 @@ import { MdDeleteForever, MdEdit } from 'react-icons/md';
 import { BaseUrl } from '../../../Config/config';
 
 function AllProductShow() {
+  const maxItemsPerPage = 10;
   const [items, setItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
   const [selectedItemType, setSelectedItemType] = useState('');
   const [showItems, setShowItems] = useState({});
   const [changesMade, setChangesMade] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(maxItemsPerPage);
+  const [displayCount, setDisplayCount] = useState(10); // Initial number of items to display
 
   const [editValues, setEditValues] = useState({
     Id: '',
@@ -285,6 +289,12 @@ function AllProductShow() {
     setSelectedItemType('');
   };
 
+
+
+  const handleShowMore = () => {
+    setDisplayCount(prevCount => prevCount + 10);
+  };
+
   return (
     <div className="p-6 bg-navy-900 min-h-screen">
       <ToastContainer />
@@ -354,7 +364,7 @@ function AllProductShow() {
                     {showItems[item.Id] ? 'Enable' : 'Disable'}
                   </button>
                 </td>
-              <td className="border px-4 py-2 flex space-x-2">
+              <td className="justify-center px-4 py-2 flex space-x-2 item-">
                 <button onClick={() => handleEdit(item.Id)} className="text-red-500">
                   <MdEdit size={20} />
                 </button>
@@ -366,6 +376,11 @@ function AllProductShow() {
           ))}
         </tbody>
       </table>
+      {items.length < totalItems && (
+        <button onClick={handleShowMore} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+          Load More
+        </button>
+      )}
       {editItem !== null && (
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-4">Edit Item</h2>
@@ -391,15 +406,19 @@ function AllProductShow() {
               />
             </label>
             <label>
-              GST:
-              <input
-                type="text"
-                name="GST"
-                value={editValues.GST}
-                onChange={handleChange}
-                className="border border-gray-300 p-2 w-full"
-              />
-            </label>
+  GST:
+  <input
+    type="text"
+    name="GST"
+    value={editValues.GST}
+    onChange={handleChange}
+    className={`border border-gray-300 p-2 w-full ${parseFloat(editValues.GST) > 28 ? 'border-red-500' : ''}`}
+  />
+  {parseFloat(editValues.GST) > 28 && (
+    <p className="text-red-500 text-sm">GST cannot exceed 28%</p>
+  )}
+</label>
+
             <label>
               Cess:
               <input
@@ -546,22 +565,29 @@ function AllProductShow() {
                 className="border border-gray-300 p-2 w-full"
               />
             </label>
-            <label>
-              Image:
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="border border-gray-300 p-2 w-full"
-              />
-            </label>
-            {editValues.imageFile && (
-              <img
-                src={`data:image/jpeg;base64,${editValues.imageFile}`}
-                alt="item"
-                className="w-20 h-20 object-cover mt-4"
-              />
-            )}
+            <div className="mb-4">
+                    <label className="block text-white">Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="w-full p-2"
+                    />
+                    {editValues.imageFile && !editValues.imageFile.startsWith('data:image/') && (
+                      <img
+                        src={`${BaseUrl}api/Master/LoadItemImage?ImageName=${editValues.imageFile}`}
+                        alt="Existing Image"
+                        className="mt-2 w-24 h-24 object-cover"
+                      />
+                    )}
+                    {editValues.imageFile && editValues.imageFile.startsWith('data:image/') && (
+                      <img
+                        src={`data:image/jpeg;base64,${editValues.imageFile}`}
+                        alt="Preview"
+                        className="mt-2 w-24 h-24 object-cover"
+                      />
+                    )}
+                  </div>
             <div className="mt-4 flex space-x-4">
               <button
                 type="button"

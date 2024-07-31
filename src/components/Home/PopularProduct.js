@@ -89,13 +89,13 @@ const PopularProduct = () => {
                                 className="w-full h-48 object-cover object-center rounded-t-lg transition-transform duration-300 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-25 transition-opacity duration-300"></div>
-                            <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {/* <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 View Details
-                            </div>
+                            </div> */}
                         </div>
                         <div className="p-4">
-                            <p className="text-sm text-black mb-2">Description: {item.ItemDescription}</p>
-                            <p className="text-sm text-black mb-2">Item Type: {item.ItemType}</p>
+                            <p className="flex items-center justify-between mt-4 font-extrabold">{item.ItemName}</p>
+                            {/* <p className="text-sm text-black mb-2">Name: {item.ItemName}</p> */}
                             <div className="flex items-center justify-between mt-4">
                                 <div className="flex items-center text-lg font-black text-black">
                                     <FaRupeeSign className="mr-1" />

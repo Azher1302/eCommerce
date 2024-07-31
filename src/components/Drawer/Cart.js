@@ -38,6 +38,7 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
         const data = await response.json();
         const updatedData = data.map((item, index) => ({ ...item, SequentialId: index + 1 }));
         setItems(updatedData);
+        localStorage.setItem('cartItems', JSON.stringify(updatedData)); // Save cart items to local storage
         updateTotalQuantity(updatedData);
       } catch (error) {
         console.error('Error fetching items:', error);
@@ -59,8 +60,10 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
       const newQuantity = updatedItems[index].Quantity + 1;
       const success = await updateItemQuantity(updatedItems[index].id, newQuantity);
       if (success) {
+        window.location.reload();
         updatedItems[index].Quantity = newQuantity;
         setItems(updatedItems);
+        localStorage.setItem('cartItems', JSON.stringify(updatedItems)); // Update cart items in local storage
         updateTotalQuantity(updatedItems);
       }
     }
@@ -72,8 +75,10 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
       const newQuantity = updatedItems[index].Quantity - 1;
       const success = await updateItemQuantity(updatedItems[index].id, newQuantity);
       if (success) {
+        window.location.reload();
         updatedItems[index].Quantity = newQuantity;
         setItems(updatedItems);
+        localStorage.setItem('cartItems', JSON.stringify(updatedItems)); // Update cart items in local storage
         updateTotalQuantity(updatedItems);
       }
     }
@@ -127,9 +132,12 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
         const updatedItems = [...items];
         updatedItems.splice(index, 1);
         setItems(updatedItems);
+        localStorage.setItem('cartItems', JSON.stringify(updatedItems)); // Update cart items in local storage
+
         updateTotalQuantity(updatedItems);
         toast.success('Item removed from cart successfully');
         closeCartDrawer();
+        window.location.reload();
       } else {
         toast.error('Failed to remove item from cart');
       }
@@ -143,7 +151,7 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
     closeCartDrawer();
 
     if (items.length === 0) {
-      toast.error('No product in this category');
+      toast.error('No product in the cart');
       return;
     }
 
@@ -230,7 +238,7 @@ function Cart({ cartDrawerOpen, closeCartDrawer }) {
           >
             <span className="align-middle font-medium">Proceed To Checkout</span>
             <span className="rounded-md font-bold py-2 px-3 bg-white text-subMain">
-              <FaRupeeSign /> {items.reduce((total, item) => total + (item.Amount || 0) * (item.Quantity || 0), 0)}
+              <FaRupeeSign /> {items.reduce((total, item) => total + (item.Amount || 0), 0)}
             </span>
           </button>
         </div>

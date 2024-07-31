@@ -32,7 +32,7 @@ function AllItemShow() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          // Authorization: `Bearer ${token}`
         }
       });
 
@@ -124,10 +124,10 @@ function AllItemShow() {
     setEditValues({
       ItemType: item.ItemType,
       HSNCode: item.HSNCode,
-      GST: item.GST,
+      GST: 0,
       Code: item.Code
     });
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleChange = e => {
@@ -173,6 +173,7 @@ function AllItemShow() {
       console.error('Error saving item changes:', error);
       toast.error('Failed to save item changes');
     }
+    window.location.reload();
   };
 
   const handleSaveChanges = async () => {
@@ -221,7 +222,7 @@ function AllItemShow() {
               <th className="bg-gray-700 rounded px-4 py-2">ID</th>
               <th className="bg-gray-700 rounded px-4 py-2">Item Type</th>
               <th className="bg-gray-700 rounded px-4 py-2">HSN Code</th>
-              <th className="bg-gray-700 rounded px-4 py-2">GST</th>
+              {/* <th className="bg-gray-700 rounded px-4 py-2">GST</th> */}
               <th className="bg-gray-700 rounded px-4 py-2">Code</th>
               <th className="bg-gray-700 rounded px-4 py-2">Enable/Disable</th>
               <th className="bg-gray-700 rounded px-4 py-2">Actions</th>
@@ -234,7 +235,7 @@ function AllItemShow() {
                 <td className="border border-gray-300 py-2 px-4">{item.Id}</td>
                 <td className="border border-gray-300 py-2 px-4">{item.ItemType}</td>
                 <td className="border border-gray-300 py-2 px-4">{item.HSNCode}</td>
-                <td className="border border-gray-300 py-2 px-4">{item.GST}</td>
+                {/* <td className="border border-gray-300 py-2 px-4">{item.GST}</td> */}
                 <td className="border border-gray-300 py-2 px-4">{item.Code}</td>
                 <td className="border border-gray-300 py-2 px-4 text-center">
                   <button
@@ -280,7 +281,7 @@ function AllItemShow() {
               className="border px-4 py-2 w-full"
             />
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block mb-2">GST</label>
             <input
               type="text"
@@ -289,7 +290,7 @@ function AllItemShow() {
               onChange={handleChange}
               className="border px-4 py-2 w-full"
             />
-          </div>
+          </div> */}
           <div className="mb-4">
             <label className="block mb-2">Code</label>
             <input

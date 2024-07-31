@@ -1,7 +1,10 @@
+
+
+
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 // import Titles from '../Titles';
-// import { BsGridFill, BsWindowSidebar } from 'react-icons/bs';
+// import { BsGridFill } from 'react-icons/bs';
 // import { Swiper, SwiperSlide } from 'swiper/react';
 // import { Autoplay } from 'swiper';
 // import 'swiper/swiper-bundle.min.css';
@@ -43,7 +46,6 @@
 //         setError(error);
 //         setLoading(false);
 //       }
-        
 //     };
 
 //     fetchData();
@@ -83,6 +85,13 @@
 //   // Filter categories based on status
 //   const filteredCategories = categories.filter(category => category.Status === 0);
 
+//   const getSlidesPerView = () => {
+//     const categoryCount = filteredCategories.length;
+//     if (categoryCount <= 2) return 2;
+//     if (categoryCount <= 4) return 3;
+//     return 5;
+//   };
+
 //   return (
 //     <div className="container mx-auto my-8 sm:my-12">
 //       <Titles title={selectedCategory ? selectedCategory.ItemType : "Categories"} Icon={BsGridFill} />
@@ -119,12 +128,12 @@
 //           <Swiper
 //             modules={[Autoplay]}
 //             autoplay={{ delay: 3000 }}
-//             slidesPerView={2}
+//             slidesPerView={getSlidesPerView()}
 //             spaceBetween={10}
 //             breakpoints={{
 //               640: { slidesPerView: 3 },
 //               768: { slidesPerView: 4 },
-//               1024: { slidesPerView: 5 },
+//               1024: { slidesPerView: getSlidesPerView() },
 //             }}
 //             className="py-20"
 //           >
@@ -164,22 +173,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Titles from '../Titles';
@@ -187,15 +180,15 @@ import { BsGridFill } from 'react-icons/bs';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper';
 import 'swiper/swiper-bundle.min.css';
-import ProductModal1 from '../Modals/ProductModal1';
+import CategoryProductsModal from './CategoryProductsModal';
 import { BaseUrl } from '../../Config/config';
 
 const CategoriesShop = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [categoryProducts, setCategoryProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -232,19 +225,13 @@ const CategoriesShop = () => {
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-  };
-
-  const handleBackToCategories = () => {
-    setSelectedCategory(null);
-  };
-
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
+    const categoryProducts = products.filter(product => product.ItemType === category.ItemType && product.Status === 0);
+    setCategoryProducts(categoryProducts);
     setModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setSelectedProduct(null);
+    setSelectedCategory(null);
     setModalOpen(false);
   };
 
@@ -255,11 +242,6 @@ const CategoriesShop = () => {
   if (error) {
     return <p className="text-center text-lg text-red-500">Error: {error.message}</p>;
   }
-
-  // Filter products based on selected category and status
-  const filteredProducts = selectedCategory
-    ? products.filter(product => product.ItemType === selectedCategory.ItemType && product.Status === 0)
-    : products.filter(product => product.Status === 0);
 
   // Filter categories based on status
   const filteredCategories = categories.filter(category => category.Status === 0);
@@ -278,30 +260,11 @@ const CategoriesShop = () => {
         {selectedCategory ? (
           <div>
             <button
-              onClick={handleBackToCategories}
+              onClick={handleCloseModal}
               className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-teal-500 hover:to-blue-500 transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105"
             >
               Back to Categories
             </button>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-              {filteredProducts.map(product => (
-                <div
-                  key={product.Id}
-                  onClick={() => handleProductClick(product)}
-                  className="bg-white shadow-lg rounded-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105"
-                >
-                  <img
-                    src={BaseUrl + `api/Master/LoadItemImage?ImageName=${product.ItemImage}`}
-                    alt={product.ItemName}
-                    className="w-full h-48 object-cover rounded-t-xl"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800">{product.ItemName}</h3>
-                    <p className="text-sm text-gray-600">{product.ItemDescription}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         ) : (
           <Swiper
@@ -328,12 +291,11 @@ const CategoriesShop = () => {
           </Swiper>
         )}
       </div>
-      {selectedProduct && (
-        <ProductModal1
+      {modalOpen && (
+        <CategoryProductsModal
           modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          product={selectedProduct}
-          isOpen={modalOpen}
+          onClose={handleCloseModal}
+          products={categoryProducts}
         />
       )}
     </div>

@@ -22,9 +22,22 @@ const Navbar = () => {
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false); // State to control logout confirmation modal
   const navigate = useNavigate();
 
-  const updateCartItemCount = () => {
-    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    setCartItemCount(cartItems.length);
+  const updateCartItemCount = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const response = await axios.get('https://api.onlineshop.initstore.com/api/User/GetUserCart', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setCartItemCount(response.data.length);
+      } else {
+        setCartItemCount(0);
+      }
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
   };
 
   const checkLoginStatus = () => {
@@ -85,6 +98,7 @@ const Navbar = () => {
     setModalOpen(false);
     toast.success('You have logged out successfully.');
     setShowLogoutConfirmation(false); // Hide logout confirmation modal
+    setCartItemCount(0); // Reset cart item count
   };
 
   const cancelLogout = () => {
@@ -116,7 +130,6 @@ const Navbar = () => {
             <img src="/images/initlogo1.png" alt="logo" className="w-24 object-contain" />
           </Link>
           
-
           <div className="flex items-center gap-4 lg:hidden">
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-xl transitions scale-hover">
               {mobileMenuOpen ? <FaTimes /> : <FaBars />}
@@ -130,11 +143,15 @@ const Navbar = () => {
               )}
             </button>
           </div>
-          <div className="hidden lg:flex gap-6 items-center w-full  justify-end">
+
+          <div className="hidden lg:flex gap-6 items-center w-full justify-end">
             <div className="flex gap-6 items-center">
               <NavLink className={getNavLinkClass} to="/shop">
                 Shop
               </NavLink>
+              {/* <NavLink to="/Categories" className={getNavLinkClass}>
+                Categories
+              </NavLink> */}
               <NavLink to="/about-us" className={getNavLinkClass}>
                 About
               </NavLink>
@@ -173,6 +190,9 @@ const Navbar = () => {
               </NavLink>
               <NavLink className={getNavLinkClass} to="/table" onClick={() => setMobileMenuOpen(false)}>
                 My Order
+              </NavLink>
+              <NavLink className={getNavLinkClass} to="/Account" onClick={() => setMobileMenuOpen(false)}>
+                Profile
               </NavLink>
               <NavLink to="/about-us" className={getNavLinkClass} onClick={() => setMobileMenuOpen(false)}>
                 About
@@ -238,3 +258,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

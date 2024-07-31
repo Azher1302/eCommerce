@@ -16,8 +16,8 @@ function Login({ modalOpen, setModalOpen }) {
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   const updateTotalUsersCount = () => {
-    const totalUsersCount = parseInt(localStorage.getItem('totalUsers') || 0) + 1;
-    localStorage.setItem('totalUsers', totalUsersCount);
+    const totalUsersCount = parseInt(localStorage.getItem('totalUsers') || '0', 10) + 1;
+    localStorage.setItem('totalUsers', totalUsersCount.toString());
   };
 
   const handleLoginSuccess = () => {
@@ -27,9 +27,9 @@ function Login({ modalOpen, setModalOpen }) {
       className: 'text-sm', // Custom class for smaller size
     });
     updateTotalUsersCount(); // Update total users count
-    navigate('/'); // Navigate to AdminDashboard route
     setTimeout(() => {
-      // window.location.reload(); // Full-screen hard refresh
+      navigate('/'); // Navigate to AdminDashboard route
+      window.location.reload(); // Full-screen hard refresh
     }, 1000); // Adding a slight delay before the refresh
   };
 
@@ -63,10 +63,7 @@ function Login({ modalOpen, setModalOpen }) {
       }
 
       const token = response.data.Token;
-      // const Id = response.data.Id;
-
       localStorage.setItem('token', token); 
-      // localStorage.setItem('Id', Id);
       localStorage.setItem('savedUserName', userName);
       localStorage.setItem('savedPassword', password);
 
@@ -75,7 +72,6 @@ function Login({ modalOpen, setModalOpen }) {
 
       // Store token in local storage
       setToken(token); // Save the token
-      // setId(Id);
 
       // Fetch user details after successful login
       fetchData(token);
@@ -153,7 +149,6 @@ function Login({ modalOpen, setModalOpen }) {
             <button type="submit" className="bg-gradient-to-r from-main to-subMain hover:from-subMain hover:to-main transition duration-300 ease-in-out lg:py-3 py-2 px-6 font-semibold rounded-md text-xs lg:text-sm shadow-lg transform hover:scale-105">
               Login
             </button>
-            
             <p className="text-center mt-2">
               Don't have an account? <Link to="/signin" className="text-blue-500">Sign up</Link>
             </p>

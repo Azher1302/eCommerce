@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa'; // Import search icon from react-icons
+import { FaSearch } from 'react-icons/fa';
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
@@ -7,7 +7,7 @@ const SearchBar = ({ onSearch }) => {
   const handleChange = (e) => {
     const value = e.target.value;
     setQuery(value);
-    onSearch(value);
+    onSearch(value); // Call the onSearch function passed as a prop
   };
 
   return (
